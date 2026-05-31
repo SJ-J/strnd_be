@@ -2,9 +2,9 @@ spring:
   application:
     name: strnd-api
   datasource:
-    url: jdbc:mysql://localhost:4000/strnd?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: root
-    password:
+    url: jdbc:mysql://gateway01.ap-northeast-1.prod.aws.tidbcloud.com:4000/strnd?sslMode=VERIFY_IDENTITY&enabledTLSProtocols=TLSv1.2,TLSv1.3&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: 36YVpNLCnj5RKVk.root
+    password: ${TIDB_PASSWORD:}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 server:

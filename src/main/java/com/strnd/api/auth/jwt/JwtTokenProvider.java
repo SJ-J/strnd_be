@@ -20,20 +20,24 @@ public class JwtTokenProvider {
     @Value("${jwt.expiration}")
     private long expiration;
 
+    // secret 문자열로 HMAC-SHA 서명 키 생성
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
+    // username, role을 담은 JWT 토큰 생성
     public String generateToken(String username, String role) {
         return Jwts.builder()
             .subject(username)
             .claim("role", role)
             .issuedAt(new Date())
+            // 현재 시각 + expiration(ms)으로 만료 시각 설정
             .expiration(new Date(System.currentTimeMillis() + expiration))
             .signWith(getSigningKey())
             .compact();
     }
 
+    // 토큰 파싱 후 Claims(페이로드) 반환
     public Claims getClaims(String token) {
         return Jwts.parser()
             .verifyWith(getSigningKey())
@@ -42,6 +46,7 @@ public class JwtTokenProvider {
             .getPayload();
     }
 
+    // 토큰 유효성 검증 (파싱 실패 시 false)
     public boolean validateToken(String token) {
         try {
             getClaims(token);
@@ -51,6 +56,7 @@ public class JwtTokenProvider {
         }
     }
 
+    // 토큰에서 username 추출
     public String getUsername(String token) {
         return getClaims(token).getSubject();
     }

@@ -35,3 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Local config (sensitive) ###
+application-local.yaml
+src/main/resources/application-local.yaml

@@ -22,25 +22,32 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    // JWT 기반 Stateless 보안 필터 체인 설정
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+            // REST API이므로 CSRF 비활성화
             .csrf(AbstractHttpConfigurer::disable)
+            // 세션 사용 안 함
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll()
+                // /health: UptimeRobot 핑 대상, /api/auth/**: 로그인·회원가입 - 인증 없이 접근 허용
+                .requestMatchers("/health", "/api/auth/**").permitAll()
                 .anyRequest().authenticated()
             )
+            // UsernamePasswordAuthenticationFilter 전에 JWT 필터 실행
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
+    // BCrypt 비밀번호 인코더 빈 등록
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    // AuthenticationManager 빈 등록
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();

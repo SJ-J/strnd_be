@@ -8,5 +8,6 @@ import java.util.Optional;
 @Mapper
 public interface UserMapper {
 
+    // username으로 유저 조회
     Optional<User> findByUsername(String username);
 }
