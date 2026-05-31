@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -21,6 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final CorsConfigurationSource corsConfigurationSource;
 
     // JWT 기반 Stateless 보안 필터 체인 설정
     @Bean
@@ -28,6 +30,8 @@ public class SecurityConfig {
         http
             // REST API이므로 CSRF 비활성화
             .csrf(AbstractHttpConfigurer::disable)
+            // CorsConfig에서 정의한 CORS 설정 적용
+            .cors(cors -> cors.configurationSource(corsConfigurationSource))
             // 세션 사용 안 함
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
