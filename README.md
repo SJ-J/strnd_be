@@ -4,6 +4,15 @@
 
 <br>
 
+## 🌐 배포 URL
+
+| 환경 | URL |
+|---|---|
+| Production | https://strnd-be.onrender.com |
+| Health Check | https://strnd-be.onrender.com/health |
+
+<br>
+
 ## 🛠 Tech Stack
 
 | Category | Stack |
@@ -12,8 +21,9 @@
 | Framework | Spring Boot 3.5 |
 | Security | Spring Security + JWT |
 | ORM | MyBatis |
-| Database | MySQL 8 (TiDB) |
+| Database | MySQL 8 (TiDB Cloud) |
 | Build | Gradle |
+| Deploy | Render (Docker) |
 
 <br>
 
@@ -27,7 +37,7 @@ src/main/java/com/strnd/api
 ├── user/                  # 사용자
 │   └── domain/
 ├── survey/                # 설문
-└── config/                # 전역 설정 (Security 등)
+└── config/                # 전역 설정 (Security, CORS 등)
 
 src/main/resources
 ├── application.yaml
@@ -41,29 +51,31 @@ src/main/resources
 ### Prerequisites
 
 - Java 21
-- MySQL 8 (또는 TiDB)
 
 ### Setup
 
 **1. 저장소 클론**
 ```bash
-git clone https://github.com/sjnnus/strnd_be.git
+git clone https://github.com/SJ-J/strnd_be.git
 cd strnd_be
 ```
 
-**2. 환경 설정**
+**2. 로컬 환경 설정**
 
-`src/main/resources/application.yaml`의 DB 접속 정보를 로컬 환경에 맞게 수정합니다.
+`src/main/resources/application-local.yaml` 파일을 생성하고 아래 내용을 입력합니다.
+> ⚠️ 이 파일은 `.gitignore`에 등록되어 있어 GitHub에 올라가지 않습니다.
 
 ```yaml
 spring:
   datasource:
-    url: jdbc:mysql://localhost:4000/strnd?useSSL=false&serverTimezone=Asia/Seoul
-    username: your-username
-    password: your-password
+    password: 실제_비밀번호
 ```
 
-**3. 실행**
+**3. IntelliJ 실행 설정**
+
+Run Configuration → Active profiles에 `local` 입력
+
+**4. 실행**
 ```bash
 ./gradlew bootRun
 ```
