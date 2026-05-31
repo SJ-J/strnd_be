@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: strnd-api
+  datasource:
+    url: jdbc:mysql://localhost:4000/strnd?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+server:
+  port: 8080
+
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+
+jwt:
+  secret: strnd-secret-key-must-be-at-least-32-characters-long
+  expiration: 86400000  # 24시간 (ms)
+
+logging:
+  level:
+    com.strnd.api: DEBUG
