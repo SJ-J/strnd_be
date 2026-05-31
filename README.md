@@ -91,8 +91,8 @@ Authorization: Bearer {token}
 
 | 역할 | 담당 |
 |---|---|
-| Backend | [@sjnnus](https://github.com/sjnnus) |
-| Frontend | React 19 + Vite 6 |
+| Backend | [@SJ-J](https://github.com/SJ-J) |
+| Frontend | [@mightyantgirl](https://github.com/mightyantgirl) |
 
 <br>
 
