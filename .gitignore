@@ -36,6 +36,9 @@ out/
 ### VS Code ###
 .vscode/
 
+### Claude Code ###
+.claude/
+
 ### Local config (sensitive) ###
 application-local.yaml
 src/main/resources/application-local.yaml

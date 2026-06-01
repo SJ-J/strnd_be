@@ -28,7 +28,7 @@ public class AuthService {
 
         // PIN BCrypt 검증 - 일치하는 디자이너 탐색
         Designer matched = designers.stream()
-            .filter(d -> passwordEncoder.matches(request.getPin(), d.getPinHash()))
+            .filter(d -> passwordEncoder.matches(request.getPinCode(), d.getPinHash()))
             .findFirst()
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "PIN이 올바르지 않습니다"));
 
