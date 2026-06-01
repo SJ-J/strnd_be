@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.strnd.api.designer.DesignerMapper">
+
+    <!-- 활성 디자이너 전체 조회 -->
+    <select id="findAllActive" resultType="com.strnd.api.designer.domain.Designer">
+        SELECT DESIGNER_ID,
+            DESIGNER_NAME,
+            PIN_HASH,
+            IS_ACTIVE,
+            PHONE,
+            LAST_LOGIN_DT,
+            REG_DT,
+            MOD_DT
+        FROM MG_DESIGNERS
+        WHERE IS_ACTIVE = TRUE
+    </select>
+
+</mapper>

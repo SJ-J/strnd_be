@@ -35,8 +35,8 @@ public class SecurityConfig {
             // 세션 사용 안 함
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                // /health: UptimeRobot 핑 대상, /api/auth/**: 로그인·회원가입 - 인증 없이 접근 허용
-                .requestMatchers("/health", "/api/auth/**").permitAll()
+                // /health: UptimeRobot 핑 대상, /api/auth/**: 로그인, /api/survey/**: 고객 설문 - 인증 없이 접근 허용
+                .requestMatchers("/health", "/api/auth/**", "/api/survey/**").permitAll()
                 .anyRequest().authenticated()
             )
             // UsernamePasswordAuthenticationFilter 전에 JWT 필터 실행

@@ -56,7 +56,7 @@ public class JwtTokenProvider {
         }
     }
 
-    // 토큰에서 username 추출
+    // 토큰에서 designerId 추출
     public String getUsername(String token) {
         return getClaims(token).getSubject();
     }
