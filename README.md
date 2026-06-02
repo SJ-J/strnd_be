@@ -41,7 +41,9 @@ src/main/java/com/strnd/api
 │   └── domain/
 ├── home/                  # 홈 화면
 │   └── dto/
-├── survey/                # 설문 (미구현)
+├── visit/                 # 방문 기록 (설문 시작·시술 기록)
+│   ├── dto/
+│   └── domain/
 ├── common/                # 전역 예외 처리
 └── config/                # 전역 설정 (Security, CORS 등)
 
@@ -50,7 +52,8 @@ src/main/resources
 └── mapper/                # MyBatis SQL XML
     ├── designer/
     ├── customer/
-    └── home/
+    ├── home/
+    └── visit/
 ```
 
 <br>
@@ -208,6 +211,34 @@ Response `409` — 중복 연락처
 Request — POST와 동일한 구조
 
 Response `200` — 수정된 고객 정보
+
+Response `404` — 미담당 고객 ID
+
+<br>
+
+### 📝 Visits
+
+| Method | URL | 인증 | 설명 |
+|---|---|---|---|
+| POST | `/api/visits` | 필요 | 설문 시작 (방문 기록 생성) |
+
+**POST /api/visits**
+
+Request
+```json
+{
+  "customerId": 60001
+}
+```
+
+Response `201`
+```json
+{
+  "visitId": 30001,
+  "surveyToken": "1acc356c2e374877b7a4b44f53f2b915",
+  "surveyUrl": "https://strnd.example.com/survey/1acc356c2e374877b7a4b44f53f2b915"
+}
+```
 
 Response `404` — 미담당 고객 ID
 
