@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.strnd.api.customer.CustomerMapper">
+
+    <select id="findAllByDesignerId" parameterType="Long"
+            resultType="com.strnd.api.customer.domain.Customer">
+        <!-- 디자이너 소속 고객 전체 조회 (최근 방문일 내림차순) -->
+        SELECT
+            CUSTOMER_ID, DESIGNER_ID, CUSTOMER_NAME, PHONE, GENDER, MEMO,
+            LAST_VISIT_DT, REG_DT, MOD_DT
+        FROM tb_customers
+        WHERE DESIGNER_ID = #{designerId}
+        ORDER BY LAST_VISIT_DT DESC, REG_DT DESC
+    </select>
+
+    <select id="findByCustomerIdAndDesignerId" resultType="com.strnd.api.customer.domain.Customer">
+        <!-- 고객 ID + 디자이너 ID로 단건 조회 -->
+        SELECT
+            CUSTOMER_ID, DESIGNER_ID, CUSTOMER_NAME, PHONE, GENDER, MEMO,
+            LAST_VISIT_DT, REG_DT, MOD_DT
+        FROM tb_customers
+        WHERE CUSTOMER_ID = #{customerId}
+        AND DESIGNER_ID = #{designerId}
+    </select>
+
+    <insert id="insert" parameterType="com.strnd.api.customer.domain.Customer"
+            useGeneratedKeys="true" keyProperty="customerId">
+        <!-- 고객 신규 등록 -->
+        INSERT INTO tb_customers (DESIGNER_ID, CUSTOMER_NAME, PHONE, GENDER, MEMO, REG_DT, MOD_DT)
+        VALUES (#{designerId}, #{customerName}, #{phone}, #{gender}, #{memo}, NOW(), NOW())
+    </insert>
+
+    <update id="update" parameterType="com.strnd.api.customer.domain.Customer">
+        <!-- 고객 정보 수정 -->
+        UPDATE tb_customers
+        SET CUSTOMER_NAME = #{customerName},
+            PHONE         = #{phone},
+            GENDER        = #{gender},
+            MEMO          = #{memo},
+            MOD_DT        = NOW()
+        WHERE CUSTOMER_ID = #{customerId}
+        AND DESIGNER_ID = #{designerId}
+    </update>
+
+</mapper>

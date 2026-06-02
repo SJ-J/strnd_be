@@ -1,6 +1,7 @@
 package com.strnd.api.config;
 
 import com.strnd.api.auth.jwt.JwtAuthenticationFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,6 +40,11 @@ public class SecurityConfig {
                 // /api/survey/**: 고객 설문 (토큰 기반 비인증 접근), /error: sendError() 포워딩 경로
                 .requestMatchers("/health", "/api/auth/**", "/api/survey/**", "/error").permitAll()
                 .anyRequest().authenticated()
+            )
+            // 토큰 없음/만료 시 401 반환
+            .exceptionHandling(ex -> ex
+                .authenticationEntryPoint((request, response, authException) ->
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "인증이 필요합니다."))
             )
             // UsernamePasswordAuthenticationFilter 전에 JWT 필터 실행
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

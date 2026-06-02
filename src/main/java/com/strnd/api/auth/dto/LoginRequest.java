@@ -8,9 +8,9 @@ import lombok.Setter;
 @Setter
 public class LoginRequest {
 
-    @NotBlank
+    @NotBlank(message = "디자이너 명을 입력해 주세요.")
     private String designerName;
 
-    @NotBlank
+    @NotBlank(message = "PIN 코드를 입력해 주세요.")
     private String pinCode;
 }
