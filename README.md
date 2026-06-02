@@ -189,8 +189,8 @@ Response `404` — 미담당 고객 ID
 
 | 역할                                | 담당        |
 |-----------------------------------|-----------|
-| 🔧 DB / Backend                   | [@SJ-J](https://github.com/SJ-J) |
-| 🎨 Design / Publishing / Frontend | [@mightyantgirl](https://github.com/mightyantgirl) |
+| 🔧 DB · Backend                   | [@SJ-J](https://github.com/SJ-J) |
+| 🎨 Design · Publishing · Frontend | [@mightyantgirl](https://github.com/mightyantgirl) |
 
 <br>
 
