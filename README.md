@@ -107,7 +107,7 @@ Authorization: Bearer {accessToken}
 
 ## 📋 API
 
-### Auth
+### 🔐 Auth
 
 | Method | URL | 인증 | 설명 |
 |---|---|---|---|
@@ -136,7 +136,7 @@ Response `401` — 이름 또는 PIN 불일치 / 비활성 계정
 
 <br>
 
-### Customers
+### 💈 Customers
 
 | Method | URL | 인증 | 설명 |
 |---|---|---|---|
@@ -213,7 +213,7 @@ Response `404` — 미담당 고객 ID
 
 <br>
 
-### Home
+### 🏠 Home
 
 | Method | URL | 인증 | 설명 |
 |---|---|---|---|
