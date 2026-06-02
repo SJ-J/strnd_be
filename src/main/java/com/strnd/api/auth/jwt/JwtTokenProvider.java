@@ -25,11 +25,12 @@ public class JwtTokenProvider {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    // username, role을 담은 JWT 토큰 생성
-    public String generateToken(String username, String role) {
+    // designerId(subject), designerName을 담은 JWT 토큰 생성
+    public String generateToken(Long designerId, String designerName) {
         return Jwts.builder()
-            .subject(username)
-            .claim("role", role)
+            .subject(String.valueOf(designerId))
+            .claim("designerName", designerName)
+            .claim("role", "ROLE_DESIGNER")
             .issuedAt(new Date())
             // 현재 시각 + expiration(ms)으로 만료 시각 설정
             .expiration(new Date(System.currentTimeMillis() + expiration))
@@ -56,8 +57,8 @@ public class JwtTokenProvider {
         }
     }
 
-    // 토큰에서 username 추출
-    public String getUsername(String token) {
-        return getClaims(token).getSubject();
+    // 토큰에서 designerId 추출
+    public Long getDesignerId(String token) {
+        return Long.valueOf(getClaims(token).getSubject());
     }
 }

@@ -7,8 +7,8 @@ import lombok.Getter;
 public class LoginRequest {
 
     @NotBlank
-    private String username;
+    private String designerName;
 
     @NotBlank
-    private String password;
+    private String pin;
 }

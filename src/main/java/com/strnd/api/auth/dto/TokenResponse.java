@@ -6,9 +6,12 @@ import lombok.Getter;
 public class TokenResponse {
 
     private final String accessToken;
-    private final String tokenType = "Bearer";
+    private final Long designerId;
+    private final String designerName;
 
-    public TokenResponse(String accessToken) {
+    public TokenResponse(String accessToken, Long designerId, String designerName) {
         this.accessToken = accessToken;
+        this.designerId = designerId;
+        this.designerName = designerName;
     }
 }

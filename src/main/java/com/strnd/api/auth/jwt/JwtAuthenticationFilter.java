@@ -32,12 +32,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (token != null && jwtTokenProvider.validateToken(token)) {
             Claims claims = jwtTokenProvider.getClaims(token);
-            String username = claims.getSubject();
+            // subject는 designerId, role 클레임으로 권한 설정
+            String designerId = claims.getSubject();
             String role = claims.get("role", String.class);
 
             // 인증 객체 생성 후 SecurityContext에 등록
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                username, null, List.of(new SimpleGrantedAuthority(role))
+                designerId, null, List.of(new SimpleGrantedAuthority(role))
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
@@ -45,7 +46,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    // Authorization 헤더에서 "Bearer " 제거 후 토큰 반환
+    // Authorization 헤더에서 "Bearer" 제거 후 토큰 반환
     private String resolveToken(HttpServletRequest request) {
         String bearer = request.getHeader("Authorization");
         if (StringUtils.hasText(bearer) && bearer.startsWith("Bearer ")) {
