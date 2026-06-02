@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.strnd.api.home.HomeMapper">
+
+    <select id="countMonthlyVisits" parameterType="Long" resultType="int">
+        <!-- 이번 달 방문 수 (VISIT_DT 기준) -->
+        SELECT COUNT(*)
+        FROM tb_visit_record
+        WHERE DESIGNER_ID = #{designerId}
+        AND YEAR(VISIT_DT) = YEAR(NOW())
+        AND MONTH(VISIT_DT) = MONTH(NOW())
+    </select>
+
+    <select id="findRecentCustomers" parameterType="Long"
+            resultType="com.strnd.api.customer.domain.Customer">
+        <!-- 최근 방문 고객 5명 (LAST_VISIT_DT 내림차순) -->
+        SELECT
+            CUSTOMER_ID, CUSTOMER_NAME, PHONE, LAST_VISIT_DT
+        FROM tb_customers
+        WHERE DESIGNER_ID = #{designerId}
+        AND LAST_VISIT_DT IS NOT NULL
+        ORDER BY LAST_VISIT_DT DESC
+        LIMIT 5
+    </select>
+
+</mapper>

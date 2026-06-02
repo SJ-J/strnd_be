@@ -19,16 +19,36 @@ public class CustomerController {
     private final CustomerService customerService;
 
     /**
-     * 고객 목록 조회
+     * 고객 목록 조회 / 이름 검색
+     * @param keyword 검색 키워드 (선택, 없으면 전체 조회)
      * @return 디자이너 소속 고객 목록
      * @since 2026-06-02
      * @author SJ-J
      */
     @GetMapping
     public ResponseEntity<List<CustomerResponse>> getCustomers(
-            @AuthenticationPrincipal String designerIdStr) {
+            @AuthenticationPrincipal String designerIdStr,
+            @RequestParam(required = false) String keyword) {
         Long designerId = Long.parseLong(designerIdStr);
+        if (keyword != null && !keyword.isBlank()) {
+            return ResponseEntity.ok(customerService.searchCustomers(designerId, keyword));
+        }
         return ResponseEntity.ok(customerService.getCustomers(designerId));
+    }
+
+    /**
+     * 고객 상세 조회
+     * @param customerId 조회할 고객 ID
+     * @return 고객 상세 정보
+     * @since 2026-06-03
+     * @author SJ-J
+     */
+    @GetMapping("/{customerId}")
+    public ResponseEntity<CustomerResponse> getCustomer(
+            @AuthenticationPrincipal String designerIdStr,
+            @PathVariable Long customerId) {
+        Long designerId = Long.parseLong(designerIdStr);
+        return ResponseEntity.ok(customerService.getCustomer(designerId, customerId));
     }
 
     /**

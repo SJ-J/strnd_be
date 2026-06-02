@@ -27,6 +27,20 @@ public class CustomerService {
                 .collect(Collectors.toList());
     }
 
+    // 이름 키워드로 고객 검색
+    public List<CustomerResponse> searchCustomers(Long designerId, String keyword) {
+        return customerMapper.searchByKeyword(designerId, keyword).stream()
+                .map(CustomerResponse::from)
+                .collect(Collectors.toList());
+    }
+
+    // 고객 상세 조회
+    public CustomerResponse getCustomer(Long designerId, Long customerId) {
+        Customer customer = customerMapper.findByCustomerIdAndDesignerId(customerId, designerId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "고객을 찾을 수 없습니다."));
+        return CustomerResponse.from(customer);
+    }
+
     // 고객 등록
     public CustomerResponse createCustomer(Long designerId, CustomerRequest request) {
         // 성별 값 유효성 검증

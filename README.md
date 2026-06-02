@@ -1,4 +1,4 @@
-# ✂️ Strnd — 고객 설문·시술 기록 관리 서비스 (Backend)
+# ✂️ Strnd — 고객 설문·시술 기록 관리 서비스(Backend)
 
 > 고객이 시술 전 설문을 작성하고, 디자이너가 이를 확인하여 시술 내용을 기록하는 웹 서비스의 백엔드 API 서버입니다.
 
@@ -13,7 +13,7 @@
 
 <br>
 
-## 🛠Tech Stack
+## ⚙️ Tech Stack
 
 | Category | Stack |
 |---|---|
@@ -36,18 +36,26 @@ src/main/java/com/strnd/api
 │   └── jwt/
 ├── designer/              # 디자이너 도메인
 │   └── domain/
+├── customer/              # 고객 도메인
+│   ├── dto/
+│   └── domain/
+├── home/                  # 홈 화면
+│   └── dto/
 ├── survey/                # 설문 (미구현)
+├── common/                # 전역 예외 처리
 └── config/                # 전역 설정 (Security, CORS 등)
 
 src/main/resources
 ├── application.yaml
 └── mapper/                # MyBatis SQL XML
-  └── designer/
+    ├── designer/
+    ├── customer/
+    └── home/
 ```
 
 <br>
 
-## ⚙️ Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 
@@ -80,8 +88,7 @@ Run Configuration → Active profiles에 `local` 입력
 ```bash
 ./gradlew bootRun
 ```
-
-서버가 `http://localhost:8080`에서 실행됩니다.
+> 🔗 서버가 `http://localhost:8080`에서 실행됩니다.
 
 <br>
 
@@ -111,17 +118,17 @@ Authorization: Bearer {accessToken}
 Request
 ```json
 {
-"designerName": "임코비",
-"pinCode": "1234"
+    "designerName": "임코비",
+    "pinCode": "1234"
 }
 ```
 
 Response `200`
 ```json
 {
-"accessToken": "eyJhbGci...",
-"designerId": 1,
-"designerName": "임코비"
+    "accessToken": "eyJhbGci...",
+    "designerId": 1,
+    "designerName": "임코비"
 }
 ```
 
@@ -129,12 +136,118 @@ Response `401` — 이름 또는 PIN 불일치 / 비활성 계정
 
 <br>
 
+### Customers
+
+| Method | URL | 인증 | 설명 |
+|---|---|---|---|
+| GET | `/api/customers` | 필요 | 고객 목록 조회 |
+| GET | `/api/customers?keyword={검색어}` | 필요 | 고객 검색 (이름·전화번호) |
+| GET | `/api/customers/{customerId}` | 필요 | 고객 상세 조회 |
+| POST | `/api/customers` | 필요 | 고객 등록 |
+| PUT | `/api/customers/{customerId}` | 필요 | 고객 정보 수정 |
+
+**GET /api/customers**
+
+Response `200`
+```json
+[
+  {
+    "customerId": 1,
+    "customerName": "주수진",
+    "phone": "01019931219",
+    "gender": "FEMALE",
+    "memo": "탈색했지만 앞머리 펌 하고 싶어요",
+    "lastVisitDt": "2026-05-31T08:48:07",
+    "regDt": "2026-05-31T08:48:07"
+  }
+]
+```
+
+**GET /api/customers?keyword={검색어}**
+
+> 고객명 또는 전화번호로 검색. `keyword` 미입력 시 전체 목록 반환
+
+Response `200` — 전체 목록과 동일한 구조
+
+**GET /api/customers/{customerId}**
+
+Response `200`
+```json
+{
+  "customerId": 1,
+  "customerName": "주수진",
+  "phone": "01019931219",
+  "gender": "FEMALE",
+  "memo": "탈색했지만 앞머리 펌 하고 싶어요",
+  "lastVisitDt": "2026-05-31T08:48:07",
+  "regDt": "2026-05-31T08:48:07"
+}
+```
+
+Response `404` — 미담당 고객 ID
+
+**POST /api/customers**
+
+Request
+```json
+{
+  "customerName": "임희진",
+  "phone": "01019970901",
+  "gender": "FEMALE",
+  "memo": "반려견과 같은 헤어스타일 희망해요"
+}
+```
+> `memo` 생략 가능
+
+Response `201` — 등록된 고객 정보
+
+Response `409` — 중복 연락처
+
+**PUT /api/customers/{customerId}**
+
+Request — POST와 동일한 구조
+
+Response `200` — 수정된 고객 정보
+
+Response `404` — 미담당 고객 ID
+
+<br>
+
+### Home
+
+| Method | URL | 인증 | 설명 |
+|---|---|---|---|
+| GET | `/api/home` | 필요 | 홈 화면 조회 |
+
+**GET /api/home**
+
+Response `200`
+```json
+{
+  "monthlyVisitCount": 3,
+  "recentCustomers": [
+    {
+      "customerId": 1,
+      "customerName": "주수진",
+      "phone": "01019931219",
+      "lastVisitDt": "2026-06-02T10:00:00"
+    }
+  ]
+}
+```
+
+> `monthlyVisitCount` — 이번 달 방문 수 (tb_visit_record.VISIT_DT 기준)
+>
+> `recentCustomers` — 최근 방문 고객 최대 5명 (LAST_VISIT_DT 내림차순)
+
+<br>
+
 ## 👥 Team
 
-| 역할 | 담당 |
-|---|---|
-| Backend | [@SJ-J](https://github.com/SJ-J) |
-| Frontend | [@mightyantgirl](https://github.com/mightyantgirl) |
+| 역할                              | 담당        |
+|---------------------------------|-----------|
+| 🔧 DB · Backend                 | [@SJ-J](https://github.com/SJ-J) |
+| 🎨 Design · Publishing · Frontend | [@mightyantgirl](https://github.com/mightyantgirl) |
 
 <br>
 

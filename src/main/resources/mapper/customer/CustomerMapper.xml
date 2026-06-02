@@ -15,6 +15,18 @@
         ORDER BY LAST_VISIT_DT DESC, REG_DT DESC
     </select>
 
+    <select id="searchByKeyword" resultType="com.strnd.api.customer.domain.Customer">
+        <!-- 이름 또는 전화번호 키워드로 고객 검색 (최근 방문일 내림차순) -->
+        SELECT
+            CUSTOMER_ID, DESIGNER_ID, CUSTOMER_NAME, PHONE, GENDER, MEMO,
+            LAST_VISIT_DT, REG_DT, MOD_DT
+        FROM tb_customers
+        WHERE DESIGNER_ID = #{designerId}
+          AND (CUSTOMER_NAME LIKE CONCAT('%', #{keyword}, '%')
+           OR PHONE LIKE CONCAT('%', #{keyword}, '%'))
+        ORDER BY LAST_VISIT_DT DESC, REG_DT DESC
+    </select>
+
     <select id="findByCustomerIdAndDesignerId" resultType="com.strnd.api.customer.domain.Customer">
         <!-- 고객 ID + 디자이너 ID로 단건 조회 -->
         SELECT
