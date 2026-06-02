@@ -4,6 +4,7 @@ import com.strnd.api.customer.domain.Customer;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,4 +25,7 @@ public interface CustomerMapper {
 
     // 고객 정보 수정
     void update(Customer customer);
+
+    // 마지막 방문일 갱신
+    void updateLastVisitDt(@Param("customerId") Long customerId, @Param("designerId") Long designerId, @Param("lastVisitDt") LocalDateTime lastVisitDt);
 }

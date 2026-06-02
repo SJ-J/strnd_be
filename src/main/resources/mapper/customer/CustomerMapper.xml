@@ -22,8 +22,8 @@
             LAST_VISIT_DT, REG_DT, MOD_DT
         FROM tb_customers
         WHERE DESIGNER_ID = #{designerId}
-          AND (CUSTOMER_NAME LIKE CONCAT('%', #{keyword}, '%')
-           OR PHONE LIKE CONCAT('%', #{keyword}, '%'))
+        AND (CUSTOMER_NAME LIKE CONCAT('%', #{keyword}, '%')
+        OR PHONE LIKE CONCAT('%', #{keyword}, '%'))
         ORDER BY LAST_VISIT_DT DESC, REG_DT DESC
     </select>
 
@@ -43,6 +43,15 @@
         INSERT INTO tb_customers (DESIGNER_ID, CUSTOMER_NAME, PHONE, GENDER, MEMO, REG_DT, MOD_DT)
         VALUES (#{designerId}, #{customerName}, #{phone}, #{gender}, #{memo}, NOW(), NOW())
     </insert>
+
+    <update id="updateLastVisitDt">
+        <!-- 마지막 방문일 갱신 -->
+        UPDATE tb_customers
+        SET LAST_VISIT_DT = #{lastVisitDt},
+            MOD_DT        = NOW()
+        WHERE CUSTOMER_ID = #{customerId}
+        AND DESIGNER_ID = #{designerId}
+    </update>
 
     <update id="update" parameterType="com.strnd.api.customer.domain.Customer">
         <!-- 고객 정보 수정 -->

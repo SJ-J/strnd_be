@@ -1,0 +1,34 @@
+package com.strnd.api.visit;
+
+import com.strnd.api.visit.dto.VisitStartRequest;
+import com.strnd.api.visit.dto.VisitStartResponse;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/visits")
+@RequiredArgsConstructor
+public class VisitController {
+
+    private final VisitService visitService;
+
+    /**
+     * 설문 시작 (방문 기록 생성)
+     * @param request customerId
+     * @return visitId, surveyToken, surveyUrl
+     * @since 2026-06-03
+     * @author SJ-J
+     */
+    @PostMapping
+    public ResponseEntity<VisitStartResponse> startVisit(
+            @AuthenticationPrincipal String designerIdStr,
+            @RequestBody @Valid VisitStartRequest request) {
+        Long designerId = Long.parseLong(designerIdStr);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(visitService.startVisit(designerId, request));
+    }
+}

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.strnd.api.visit.VisitMapper">
+
+    <insert id="insert" parameterType="com.strnd.api.visit.domain.VisitRecord"
+            useGeneratedKeys="true" keyProperty="visitId">
+        <!-- 방문 기록 신규 생성 -->
+        INSERT INTO tb_visit_record (
+            CUSTOMER_ID, DESIGNER_ID, SURVEY_TOKEN, TOKEN_EXPIRES_DT,
+            STATUS, VISIT_DT, REG_DT, MOD_DT
+        ) VALUES (
+            #{customerId}, #{designerId}, #{surveyToken}, #{tokenExpiresDt},
+            #{status}, #{visitDt}, NOW(), NOW()
+        )
+    </insert>
+
+    <select id="findByVisitIdAndDesignerId" resultType="com.strnd.api.visit.domain.VisitRecord">
+        <!-- 방문 ID + 디자이너 ID로 단건 조회 -->
+        SELECT
+            VISIT_ID, CUSTOMER_ID, DESIGNER_ID, SURVEY_TOKEN, TOKEN_EXPIRES_DT,
+            STATUS, VISIT_DT, SUBMIT_DT, REG_DT, MOD_DT
+        FROM tb_visit_record
+        WHERE VISIT_ID = #{visitId}
+        AND DESIGNER_ID = #{designerId}
+    </select>
+
+</mapper>

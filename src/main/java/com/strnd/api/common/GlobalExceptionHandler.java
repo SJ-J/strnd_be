@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.OffsetDateTime;
 import java.util.LinkedHashMap;
@@ -33,5 +34,23 @@ public class GlobalExceptionHandler {
         body.put("path", request.getRequestURI());
 
         return ResponseEntity.badRequest().body(body);
+    }
+
+    // ResponseStatusException (4xx/5xx) 커스텀 에러 형식 통일
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<Map<String, Object>> handleResponseStatusException(
+            ResponseStatusException e, HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.resolve(e.getStatusCode().value());
+        String error = (status != null) ? status.getReasonPhrase() : "Error";
+
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", OffsetDateTime.now());
+        body.put("status", e.getStatusCode().value());
+        body.put("error", error);
+        body.put("message", e.getReason());
+        body.put("path", request.getRequestURI());
+
+        return ResponseEntity.status(e.getStatusCode()).body(body);
     }
 }

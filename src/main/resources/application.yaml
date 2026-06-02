@@ -22,6 +22,9 @@ jwt:
   secret: strnd-secret-key-must-be-at-least-32-characters-long
   expiration: 86400000  # 24시간 (ms)
 
+app:
+  frontend-base-url: ${FRONTEND_BASE_URL:http://localhost:5173}
+
 logging:
   level:
     com.strnd.api: DEBUG
