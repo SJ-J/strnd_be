@@ -31,7 +31,7 @@ public class AuthService {
         }
 
         // PIN 검증
-        if (!passwordEncoder.matches(request.getPin(), designer.getPinHash())) {
+        if (!passwordEncoder.matches(request.getPinCode(), designer.getPinHash())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이름 또는 PIN이 올바르지 않습니다.");
         }
 

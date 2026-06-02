@@ -36,8 +36,8 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 // /health: UptimeRobot 핑 대상, /api/auth/**: 로그인 - 인증 없이 접근 허용
-                // /error: sendError() 처리 시 Tomcat이 포워드하는 경로 - 미허용 시 Spring Security가 403 반환
-                .requestMatchers("/health", "/api/auth/**", "/error").permitAll()
+                // /api/survey/**: 고객 설문 (토큰 기반 비인증 접근), /error: sendError() 포워딩 경로
+                .requestMatchers("/health", "/api/auth/**", "/api/survey/**", "/error").permitAll()
                 .anyRequest().authenticated()
             )
             // UsernamePasswordAuthenticationFilter 전에 JWT 필터 실행
