@@ -1,4 +1,4 @@
-# ✂️ Strnd — 고객 설문·시술 기록 관리 서비스(Backend)
+# ✂️ Strnd — 고객 설문·시술 기록 관리 서비스 (Backend)
 
 > 고객이 시술 전 설문을 작성하고, 디자이너가 이를 확인하여 시술 내용을 기록하는 웹 서비스의 백엔드 API 서버입니다.
 
@@ -13,7 +13,7 @@
 
 <br>
 
-## 🛠 Tech Stack
+## 🛠Tech Stack
 
 | Category | Stack |
 |---|---|
@@ -31,17 +31,18 @@
 
 ```
 src/main/java/com/strnd/api
-├── auth/                  # 인증 (JWT 발급·검증)
+├── auth/                  # 인증 (로그인, JWT 발급·검증)
 │   ├── dto/
 │   └── jwt/
-├── user/                  # 사용자
+├── designer/              # 디자이너 도메인
 │   └── domain/
-├── survey/                # 설문
+├── survey/                # 설문 (미구현)
 └── config/                # 전역 설정 (Security, CORS 등)
 
 src/main/resources
 ├── application.yaml
 └── mapper/                # MyBatis SQL XML
+  └── designer/
 ```
 
 <br>
@@ -67,8 +68,8 @@ cd strnd_be
 
 ```yaml
 spring:
-  datasource:
-    password: 실제_비밀번호
+datasource:
+  password: 실제_비밀번호
 ```
 
 **3. IntelliJ 실행 설정**
@@ -89,13 +90,42 @@ Run Configuration → Active profiles에 `local` 입력
 JWT Bearer Token 방식을 사용합니다.
 
 ```
-Authorization: Bearer {token}
+Authorization: Bearer {accessToken}
 ```
 
-| 역할 | 설명 |
-|---|---|
-| `ROLE_USER` | 고객 — 설문 작성 |
-| `ROLE_DESIGNER` | 디자이너 — 설문 확인 및 시술 기록 |
+- 로그인 성공 시 발급된 `accessToken`을 이후 모든 API 요청 헤더에 포함합니다.
+- 토큰 유효 기간: 24시간
+
+<br>
+
+## 📋 API
+
+### Auth
+
+| Method | URL | 인증 | 설명 |
+|---|---|---|---|
+| POST | `/api/auth/login` | 불필요 | 디자이너 로그인 |
+
+**POST /api/auth/login**
+
+Request
+```json
+{
+"designerName": "임코비",
+"pinCode": "1234"
+}
+```
+
+Response `200`
+```json
+{
+"accessToken": "eyJhbGci...",
+"designerId": 1,
+"designerName": "임코비"
+}
+```
+
+Response `401` — 이름 또는 PIN 불일치 / 비활성 계정
 
 <br>
 
