@@ -183,6 +183,7 @@ Response `401` — 연락처 또는 PIN 불일치 / 비활성 계정
 | GET | `/api/customers` | 필요 | 고객 목록 조회 |
 | GET | `/api/customers?keyword={검색어}` | 필요 | 고객 검색 (이름) |
 | GET | `/api/customers/{customerId}` | 필요 | 고객 상세 조회 |
+| GET | `/api/customers/{customerId}/visits` | 필요 | 고객 방문 히스토리 조회 |
 | POST | `/api/customers` | 필요 | 고객 등록 |
 | PUT | `/api/customers/{customerId}` | 필요 | 고객 정보 수정 |
 
@@ -301,6 +302,28 @@ Response `201`
 ```
 
 Response `404` — 미담당 고객 ID
+
+**GET /api/customers/{customerId}/visits**
+
+Response `200`
+```json
+[
+  {
+    "visitId": 60001,
+    "status": "COMPLETED",
+    "visitDt": "2026-06-03T10:10:42",
+    "treatmentProduct": "코비네 향긋 멍샴푸, 유호표 찰랑찰랑 트리트먼트",
+    "treatmentDetail": "하이 레이어드 커트",
+    "treatmentNote": "탈색모 - 클리닉 서비스"
+  }
+]
+```
+
+> 최신 방문순(VISIT_DT 내림차순) 정렬
+>
+> 시술 기록 전이면 treatment 필드 전체 `null`
+
+Response `404` — 존재하지 않거나 미담당 customerId
 
 **GET /api/visits/{visitId}**
 
