@@ -21,9 +21,10 @@ public class CorsConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // 허용할 출처 (로컬 개발 + 배포 URL 추가 예정)
+        // 허용할 출처 (로컬 개발 + 프론트 배포 URL)
         config.setAllowedOrigins(List.of(
-            "http://localhost:5173"
+            "http://localhost:5173",
+            "https://strnd.vercel.app"
         ));
 
         // 허용할 HTTP 메서드
