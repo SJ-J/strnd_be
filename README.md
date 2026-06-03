@@ -259,13 +259,15 @@ Response `404` — 미담당 고객 ID
 
 | Method | URL | 인증 | 설명 |
 |---|---|---|---|
-| POST | `/api/visits` | 필요 | 설문 시작 (방문 기록 생성) |
+| POST | `/api/visits` | 필요 | 방문 기록 생성 (설문 시작 또는 설문 없이 바로 기록) |
 | GET | `/api/visits/{visitId}` | 필요 | 방문 기록 단건 조회 |
 | PUT | `/api/visits/{visitId}/treatment` | 필요 | 시술 내용 기록 |
 
 **POST /api/visits**
 
-Request
+> `skipSurvey` — `false`(기본값): 설문 시작, `true`: 설문 없이 STATUS='COMPLETED'로 바로 생성 후 `/api/visits/{visitId}/treatment` 재사용
+
+Request — 설문 시작
 ```json
 {
   "customerId": 60001
@@ -278,6 +280,23 @@ Response `201`
   "visitId": 30001,
   "surveyToken": "1acc356c2e374877b7a4b44f53f2b915",
   "surveyUrl": "https://strnd.example.com/survey/1acc356c2e374877b7a4b44f53f2b915"
+}
+```
+
+Request — 설문 없이 바로 기록
+```json
+{
+  "customerId": 60001,
+  "skipSurvey": true
+}
+```
+
+Response `201`
+```json
+{
+  "visitId": 90001,
+  "surveyToken": null,
+  "surveyUrl": null
 }
 ```
 
