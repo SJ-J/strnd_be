@@ -37,8 +37,9 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 // /health: UptimeRobot 핑 대상, /api/auth/**: 로그인 - 인증 없이 접근 허용
-                // /api/survey/**: 고객 설문 (토큰 기반 비인증 접근), /error: sendError() 포워딩 경로
-                .requestMatchers("/health", "/api/auth/**", "/api/survey/**", "/error").permitAll()
+                // /api/survey/**: 고객 설문 (토큰 기반 비인증 접근), /api/style-images: 설문 step3 이미지 선택
+                // /error: sendError() 포워딩 경로
+                .requestMatchers("/health", "/api/auth/**", "/api/survey/**", "/api/style-images", "/error").permitAll()
                 .anyRequest().authenticated()
             )
             // 토큰 없음/만료 시 401 반환
