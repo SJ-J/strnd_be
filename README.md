@@ -44,7 +44,11 @@ src/main/java/com/strnd/api
 ├── visit/                 # 방문 기록 (설문 시작·시술 기록)
 │   ├── dto/
 │   └── domain/
-├── common/                # 전역 예외 처리
+├── survey/                # 설문 (제출)
+│   └── dto/
+├── common/                # 전역 예외 처리, 공통 DTO, TypeHandler
+│   ├── dto/
+│   └── typehandler/
 └── config/                # 전역 설정 (Security, CORS 등)
 
 src/main/resources
@@ -53,7 +57,8 @@ src/main/resources
     ├── designer/
     ├── customer/
     ├── home/
-    └── visit/
+    ├── visit/
+    └── survey/
 ```
 
 <br>
@@ -200,6 +205,8 @@ Request
   "memo": "반려견과 같은 헤어스타일 희망해요"
 }
 ```
+> `gender` — `MALE` / `FEMALE` / `OTHER` 중 하나 (필수)
+>
 > `memo` 생략 가능
 
 Response `201` — 등록된 고객 정보
@@ -241,6 +248,41 @@ Response `201`
 ```
 
 Response `404` — 미담당 고객 ID
+
+<br>
+
+### 📝 Survey
+
+| Method | URL | 인증 | 설명 |
+|---|---|---|---|
+| POST | `/api/survey/{surveyToken}` | 불필요 | 설문 제출 |
+
+**POST /api/survey/{surveyToken}**
+
+Request
+```json
+{
+  "visitRoute": "SNS",
+  "refDesigner": "임희진",
+  "styles": ["내추럴", "시크"],
+  "moods": ["깔끔하고 단정한", "세련되고 고급스러운"],
+  "styleImageIds": [30001, 30002],
+  "hairConcerns": ["모발 손상", "볼륨 부족"],
+  "requestMemo": "숱 많이 쳐주세요"
+}
+```
+> 모든 필드 생략 가능 (`visitRoute`, `refDesigner`, 각 배열 필드)
+
+Response `200`
+```json
+{ "message": "설문이 제출되었습니다." }
+```
+
+Response `404` — 유효하지 않은 토큰
+
+Response `409` — 이미 제출된 설문
+
+Response `410` — 만료된 토큰
 
 <br>
 
