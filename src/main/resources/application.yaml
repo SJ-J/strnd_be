@@ -25,7 +25,10 @@ jwt:
   expiration-remember-me: 604800000   # 7일 (ms)
 
 app:
-  frontend-base-url: ${FRONTEND_BASE_URL:http://localhost:5173}
+  # ----- LOCAL ----- #
+#  frontend-base-url: ${FRONTEND_BASE_URL:http://localhost:5173}
+  # ----- PROD ----- #
+  frontend-base-url: ${FRONTEND_BASE_URL:https://strnd.vercel.app}
 
 logging:
   level:
