@@ -2,6 +2,8 @@ package com.strnd.api.customer;
 
 import com.strnd.api.customer.dto.CustomerRequest;
 import com.strnd.api.customer.dto.CustomerResponse;
+import com.strnd.api.visit.VisitService;
+import com.strnd.api.visit.dto.VisitHistoryResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,7 @@ import java.util.List;
 public class CustomerController {
 
     private final CustomerService customerService;
+    private final VisitService visitService;
 
     /**
      * 고객 목록 조회 / 이름 검색
@@ -65,6 +68,21 @@ public class CustomerController {
         Long designerId = Long.parseLong(designerIdStr);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(customerService.createCustomer(designerId, request));
+    }
+
+    /**
+     * 고객 방문 히스토리 조회
+     * @param customerId 조회할 고객 ID
+     * @return 방문 기록 목록 (최신순)
+     * @since 2026-06-03
+     * @author SJ-J
+     */
+    @GetMapping("/{customerId}/visits")
+    public ResponseEntity<List<VisitHistoryResponse>> getVisitHistory(
+            @AuthenticationPrincipal String designerIdStr,
+            @PathVariable Long customerId) {
+        Long designerId = Long.parseLong(designerIdStr);
+        return ResponseEntity.ok(visitService.getVisitHistory(designerId, customerId));
     }
 
     /**

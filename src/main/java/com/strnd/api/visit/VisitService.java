@@ -4,9 +4,12 @@ import com.strnd.api.customer.CustomerMapper;
 import com.strnd.api.visit.domain.VisitRecord;
 import com.strnd.api.visit.dto.TreatmentRequest;
 import com.strnd.api.visit.dto.VisitDetailResponse;
+import com.strnd.api.visit.dto.VisitHistoryResponse;
 import com.strnd.api.visit.dto.VisitStartRequest;
 import com.strnd.api.visit.dto.VisitStartResponse;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -89,6 +92,14 @@ public class VisitService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "방문 기록을 찾을 수 없습니다.");
         }
         return detail;
+    }
+
+    // 고객 방문 히스토리 목록 조회 (최신순)
+    public List<VisitHistoryResponse> getVisitHistory(Long designerId, Long customerId) {
+        // 고객 소유권 검증
+        customerMapper.findByCustomerIdAndDesignerId(customerId, designerId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "고객을 찾을 수 없습니다."));
+        return visitMapper.findHistoryByCustomerIdAndDesignerId(customerId, designerId);
     }
 
     // 시술 내용 기록 (STATUS -> COMPLETED)

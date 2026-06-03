@@ -81,6 +81,17 @@
     </select>
 
 
+    <select id="findHistoryByCustomerIdAndDesignerId" resultType="com.strnd.api.visit.dto.VisitHistoryResponse">
+        <!-- 고객 방문 히스토리 목록 조회 (최신순) -->
+        SELECT
+            VISIT_ID, STATUS, VISIT_DT,
+            TREATMENT_PRODUCT, TREATMENT_DETAIL, TREATMENT_NOTE
+        FROM tb_visit_record
+        WHERE CUSTOMER_ID  = #{customerId}
+        AND   DESIGNER_ID  = #{designerId}
+        ORDER BY VISIT_DT DESC
+    </select>
+
     <update id="updateTreatment">
         <!-- 시술 내용 기록 및 상태 COMPLETED 변경 -->
         UPDATE tb_visit_record

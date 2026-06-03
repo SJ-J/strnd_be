@@ -2,8 +2,11 @@ package com.strnd.api.visit;
 
 import com.strnd.api.visit.domain.VisitRecord;
 import com.strnd.api.visit.dto.VisitDetailResponse;
+import com.strnd.api.visit.dto.VisitHistoryResponse;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 @Mapper
 public interface VisitMapper {
@@ -25,4 +28,7 @@ public interface VisitMapper {
                         @Param("treatmentProduct") String treatmentProduct,
                         @Param("treatmentDetail") String treatmentDetail,
                         @Param("treatmentNote") String treatmentNote);
+
+    // 고객의 방문 히스토리 목록 조회 (최신순)
+    List<VisitHistoryResponse> findHistoryByCustomerIdAndDesignerId(@Param("customerId") Long customerId, @Param("designerId") Long designerId);
 }
