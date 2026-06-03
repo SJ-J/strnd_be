@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.strnd.api.survey.SurveyMapper">
+
+    <select id="findByToken" parameterType="String" resultType="com.strnd.api.visit.domain.VisitRecord">
+        <!-- 토큰으로 방문 기록 조회 -->
+        SELECT
+            VISIT_ID, CUSTOMER_ID, DESIGNER_ID, SURVEY_TOKEN, TOKEN_EXPIRES_DT,
+            STATUS, VISIT_DT
+        FROM tb_visit_record
+        WHERE SURVEY_TOKEN = #{token}
+    </select>
+
+    <update id="submitSurvey">
+        <!-- 설문 데이터 저장 및 STATUS='SUBMITTED' -->
+        UPDATE tb_visit_record
+        SET
+            STATUS       = 'SUBMITTED',
+            VISIT_ROUTE  = #{visit.visitRoute},
+            REF_DESIGNER = #{visit.refDesigner},
+            STYLES       = #{visit.styles, typeHandler=com.strnd.api.common.typehandler.JsonStringListTypeHandler},
+            MOODS        = #{visit.moods, typeHandler=com.strnd.api.common.typehandler.JsonStringListTypeHandler},
+            STYLE_IMAGE_IDS = #{visit.styleImageIds, typeHandler=com.strnd.api.common.typehandler.JsonLongListTypeHandler},
+            HAIR_CONCERNS   = #{visit.hairConcerns, typeHandler=com.strnd.api.common.typehandler.JsonStringListTypeHandler},
+            REQUEST_MEMO = #{visit.requestMemo},
+            SUBMIT_DT    = NOW(),
+            MOD_DT       = NOW()
+        WHERE VISIT_ID = #{visit.visitId}
+    </update>
+
+</mapper>
