@@ -256,6 +256,7 @@ Response `404` — 미담당 고객 ID
 | Method | URL | 인증 | 설명 |
 |---|---|---|---|
 | POST | `/api/visits` | 필요 | 설문 시작 (방문 기록 생성) |
+| GET | `/api/visits/{visitId}` | 필요 | 방문 기록 단건 조회 |
 
 **POST /api/visits**
 
@@ -276,6 +277,38 @@ Response `201`
 ```
 
 Response `404` — 미담당 고객 ID
+
+**GET /api/visits/{visitId}**
+
+Response `200`
+```json
+{
+  "visitId": 60001,
+  "status": "SUBMITTED",
+  "visitDt": "2026-06-03T10:10:42",
+  "submitDt": "2026-06-03T01:14:16",
+  "customerId": 1,
+  "customerName": "주수진",
+  "phone": "01019931219",
+  "gender": "FEMALE",
+  "visitRoute": "SNS",
+  "refDesigner": "임희진",
+  "styles": ["내추럴", "시크"],
+  "moods": ["깔끔하고 단정한", "세련되고 고급스러운"],
+  "styleImageIds": [30001, 30002],
+  "hairConcerns": ["모발 손상", "볼륨 부족"],
+  "requestMemo": "숱 많이 쳐주세요",
+  "treatmentProduct": null,
+  "treatmentDetail": null,
+  "treatmentNote": null
+}
+```
+
+> 설문 전(PENDING) 상태면 survey 필드 전체 `null`
+>
+> 시술 기록 전이면 treatment 필드 전체 `null`
+
+Response `404` — 존재하지 않거나 미담당 visitId
 
 <br>
 
