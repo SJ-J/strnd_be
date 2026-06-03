@@ -49,6 +49,9 @@ src/main/java/com/strnd/api
 ├── service/               # 시술 서비스 메뉴
 │   ├── dto/
 │   └── domain/
+├── styleimage/            # 스타일 이미지
+│   ├── dto/
+│   └── domain/
 ├── common/                # 전역 예외 처리, 공통 DTO, TypeHandler
 │   ├── dto/
 │   └── typehandler/
@@ -62,7 +65,8 @@ src/main/resources
     ├── home/
     ├── visit/
     ├── survey/
-    └── service/
+    ├── service/
+    └── styleimage/
 ```
 
 <br>
@@ -397,6 +401,33 @@ Response `200`
 ```
 
 > `IS_ACTIVE = 1` 인 항목만, `SORT_ORDER` 오름차순 정렬
+
+<br>
+
+### 🖼️ Style Images
+
+| Method | URL | 인증 | 설명 |
+|---|---|---|---|
+| GET | `/api/style-images` | 불필요 | 스타일 이미지 목록 조회 |
+
+**GET /api/style-images**
+
+Response `200`
+```json
+[
+  {
+    "imageId": 30001,
+    "serviceId": 30001,
+    "imageUrl": "https://example.com/cut-style.jpg",
+    "imageAlt": "커트 스타일 예시",
+    "sortOrder": 0
+  }
+]
+```
+
+> `IS_ACTIVE = 1` 인 항목만, `SERVICE_ID → SORT_ORDER` 오름차순 정렬
+>
+> 인증 불필요 (설문 step3 이미지 선택용)
 
 <br>
 
