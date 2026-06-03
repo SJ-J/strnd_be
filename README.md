@@ -109,7 +109,7 @@ Authorization: Bearer {accessToken}
 ```
 
 - 로그인 성공 시 발급된 `accessToken`을 이후 모든 API 요청 헤더에 포함합니다.
-- 토큰 유효 기간: 24시간
+- 토큰 유효 기간: `rememberMe: true` → 7일 / `rememberMe: false` → 8시간
 
 <br>
 
@@ -119,17 +119,45 @@ Authorization: Bearer {accessToken}
 
 | Method | URL | 인증 | 설명 |
 |---|---|---|---|
-| POST | `/api/auth/login` | 불필요 | 디자이너 로그인 |
+| POST | `/api/auth/signup` | 불필요 | 관리자 회원가입 |
+| POST | `/api/auth/login` | 불필요 | 관리자 로그인 |
+
+**POST /api/auth/signup**
+
+Request
+```json
+{
+    "designerName": "임코비",
+    "phone": "01020250205",
+    "pinCode": "1234"
+}
+```
+
+Response `201`
+```json
+{
+    "accessToken": "eyJhbGci...",
+    "designerId": 1,
+    "designerName": "임코비"
+}
+```
+
+Response `409` — 중복 연락처
+
+<br>
 
 **POST /api/auth/login**
 
 Request
 ```json
 {
-    "designerName": "임코비",
-    "pinCode": "1234"
+    "phone": "01020250205",
+    "pinCode": "5678",
+    "rememberMe": true
 }
 ```
+
+> `rememberMe` — `true` 시 7일, `false` 시 8시간 토큰 발급 (기본값: `false`)
 
 Response `200`
 ```json
@@ -140,7 +168,7 @@ Response `200`
 }
 ```
 
-Response `401` — 이름 또는 PIN 불일치 / 비활성 계정
+Response `401` — 연락처 또는 PIN 불일치 / 비활성 계정
 
 <br>
 
@@ -149,7 +177,7 @@ Response `401` — 이름 또는 PIN 불일치 / 비활성 계정
 | Method | URL | 인증 | 설명 |
 |---|---|---|---|
 | GET | `/api/customers` | 필요 | 고객 목록 조회 |
-| GET | `/api/customers?keyword={검색어}` | 필요 | 고객 검색 (이름·전화번호) |
+| GET | `/api/customers?keyword={검색어}` | 필요 | 고객 검색 (이름) |
 | GET | `/api/customers/{customerId}` | 필요 | 고객 상세 조회 |
 | POST | `/api/customers` | 필요 | 고객 등록 |
 | PUT | `/api/customers/{customerId}` | 필요 | 고객 정보 수정 |
@@ -173,7 +201,7 @@ Response `200`
 
 **GET /api/customers?keyword={검색어}**
 
-> 고객명 또는 전화번호로 검색. `keyword` 미입력 시 전체 목록 반환
+> 고객명(이름)으로 검색. `keyword` 미입력 시 전체 목록 반환
 
 Response `200` — 전체 목록과 동일한 구조
 
