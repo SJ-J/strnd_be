@@ -2,6 +2,7 @@ package com.strnd.api.visit;
 
 import com.strnd.api.customer.CustomerMapper;
 import com.strnd.api.visit.domain.VisitRecord;
+import com.strnd.api.visit.dto.TreatmentRequest;
 import com.strnd.api.visit.dto.VisitDetailResponse;
 import com.strnd.api.visit.dto.VisitStartRequest;
 import com.strnd.api.visit.dto.VisitStartResponse;
@@ -66,5 +67,20 @@ public class VisitService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "방문 기록을 찾을 수 없습니다.");
         }
         return detail;
+    }
+
+    // 시술 내용 기록 (STATUS -> COMPLETED)
+    @Transactional
+    public void recordTreatment(Long designerId, Long visitId, TreatmentRequest request) {
+        // 방문 기록 소유권 검증
+        VisitRecord visit = visitMapper.findByVisitIdAndDesignerId(visitId, designerId);
+        if (visit == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "방문 기록을 찾을 수 없습니다.");
+        }
+        // 시술 내용 저장 및 상태 변경
+        visitMapper.updateTreatment(visitId, designerId,
+                request.getTreatmentProduct(),
+                request.getTreatmentDetail(),
+                request.getTreatmentNote());
     }
 }

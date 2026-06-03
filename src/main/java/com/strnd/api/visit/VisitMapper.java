@@ -16,4 +16,10 @@ public interface VisitMapper {
 
     // 방문 기록 상세 조회 (고객 정보 + 설문 결과 + 시술 기록 JOIN)
     VisitDetailResponse findDetailByVisitIdAndDesignerId(@Param("visitId") Long visitId, @Param("designerId") Long designerId);
+
+    // 시술 내용 기록 및 STATUS='COMPLETED' 변경
+    void updateTreatment(@Param("visitId") Long visitId, @Param("designerId") Long designerId,
+                        @Param("treatmentProduct") String treatmentProduct,
+                        @Param("treatmentDetail") String treatmentDetail,
+                        @Param("treatmentNote") String treatmentNote);
 }

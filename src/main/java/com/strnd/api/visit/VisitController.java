@@ -1,5 +1,7 @@
 package com.strnd.api.visit;
 
+import com.strnd.api.common.dto.MessageResponse;
+import com.strnd.api.visit.dto.TreatmentRequest;
 import com.strnd.api.visit.dto.VisitDetailResponse;
 import com.strnd.api.visit.dto.VisitStartRequest;
 import com.strnd.api.visit.dto.VisitStartResponse;
@@ -46,5 +48,23 @@ public class VisitController {
             @PathVariable Long visitId) {
         Long designerId = Long.parseLong(designerIdStr);
         return ResponseEntity.ok(visitService.getVisitDetail(designerId, visitId));
+    }
+
+    /**
+     * 시술 내용 기록
+     * @param visitId 방문 ID
+     * @param request treatmentProduct, treatmentDetail, treatmentNote
+     * @return 완료 메시지
+     * @since 2026-06-03
+     * @author SJ-J
+     */
+    @PutMapping("/{visitId}/treatment")
+    public ResponseEntity<MessageResponse> recordTreatment(
+            @AuthenticationPrincipal String designerIdStr,
+            @PathVariable Long visitId,
+            @RequestBody TreatmentRequest request) {
+        Long designerId = Long.parseLong(designerIdStr);
+        visitService.recordTreatment(designerId, visitId, request);
+        return ResponseEntity.ok(new MessageResponse("시술 내용이 기록되었습니다."));
     }
 }

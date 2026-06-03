@@ -70,4 +70,18 @@
         AND v.DESIGNER_ID = #{designerId}
     </select>
 
+
+    <update id="updateTreatment">
+        <!-- 시술 내용 기록 및 상태 COMPLETED 변경 -->
+        UPDATE tb_visit_record
+        SET
+            TREATMENT_PRODUCT = #{treatmentProduct},
+            TREATMENT_DETAIL  = #{treatmentDetail},
+            TREATMENT_NOTE    = #{treatmentNote},
+            STATUS            = 'COMPLETED',
+            MOD_DT            = NOW()
+        WHERE VISIT_ID    = #{visitId}
+        AND   DESIGNER_ID = #{designerId}
+    </update>
+
 </mapper>
