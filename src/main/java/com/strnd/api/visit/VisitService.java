@@ -2,6 +2,7 @@ package com.strnd.api.visit;
 
 import com.strnd.api.customer.CustomerMapper;
 import com.strnd.api.visit.domain.VisitRecord;
+import com.strnd.api.visit.dto.VisitDetailResponse;
 import com.strnd.api.visit.dto.VisitStartRequest;
 import com.strnd.api.visit.dto.VisitStartResponse;
 import lombok.RequiredArgsConstructor;
@@ -55,5 +56,15 @@ public class VisitService {
                 .surveyToken(token)
                 .surveyUrl(frontendBaseUrl + "/survey/" + token)
                 .build();
+    }
+
+    // 방문 기록 상세 조회 (고객 정보 + 설문 결과 + 시술 기록)
+    public VisitDetailResponse getVisitDetail(Long designerId, Long visitId) {
+        // 방문 기록 조회 (소유권 검증 포함)
+        VisitDetailResponse detail = visitMapper.findDetailByVisitIdAndDesignerId(visitId, designerId);
+        if (detail == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "방문 기록을 찾을 수 없습니다.");
+        }
+        return detail;
     }
 }

@@ -1,5 +1,6 @@
 package com.strnd.api.visit;
 
+import com.strnd.api.visit.dto.VisitDetailResponse;
 import com.strnd.api.visit.dto.VisitStartRequest;
 import com.strnd.api.visit.dto.VisitStartResponse;
 import jakarta.validation.Valid;
@@ -30,5 +31,20 @@ public class VisitController {
         Long designerId = Long.parseLong(designerIdStr);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(visitService.startVisit(designerId, request));
+    }
+
+    /**
+     * 방문 기록 상세 조회
+     * @param visitId 방문 ID
+     * @return 방문 기록 + 고객 정보 + 설문 결과 + 시술 기록
+     * @since 2026-06-03
+     * @author SJ-J
+     */
+    @GetMapping("/{visitId}")
+    public ResponseEntity<VisitDetailResponse> getVisitDetail(
+            @AuthenticationPrincipal String designerIdStr,
+            @PathVariable Long visitId) {
+        Long designerId = Long.parseLong(designerIdStr);
+        return ResponseEntity.ok(visitService.getVisitDetail(designerId, visitId));
     }
 }

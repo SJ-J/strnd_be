@@ -26,4 +26,48 @@
         AND DESIGNER_ID = #{designerId}
     </select>
 
+    <resultMap id="visitDetailResultMap" type="com.strnd.api.visit.dto.VisitDetailResponse">
+        <!-- 방문 기록 -->
+        <result property="visitId"          column="VISIT_ID"/>
+        <result property="status"           column="STATUS"/>
+        <result property="visitDt"          column="VISIT_DT"/>
+        <result property="submitDt"         column="SUBMIT_DT"/>
+        <!-- 고객 정보 -->
+        <result property="customerId"       column="CUSTOMER_ID"/>
+        <result property="customerName"     column="CUSTOMER_NAME"/>
+        <result property="phone"            column="PHONE"/>
+        <result property="gender"           column="GENDER"/>
+        <!-- 설문 -->
+        <result property="visitRoute"       column="VISIT_ROUTE"/>
+        <result property="refDesigner"      column="REF_DESIGNER"/>
+        <result property="styles"           column="STYLES"
+                typeHandler="com.strnd.api.common.typehandler.JsonStringListTypeHandler"/>
+        <result property="moods"            column="MOODS"
+                typeHandler="com.strnd.api.common.typehandler.JsonStringListTypeHandler"/>
+        <result property="styleImageIds"    column="STYLE_IMAGE_IDS"
+                typeHandler="com.strnd.api.common.typehandler.JsonLongListTypeHandler"/>
+        <result property="hairConcerns"     column="HAIR_CONCERNS"
+                typeHandler="com.strnd.api.common.typehandler.JsonStringListTypeHandler"/>
+        <result property="requestMemo"      column="REQUEST_MEMO"/>
+        <!-- 시술 기록 -->
+        <result property="treatmentProduct" column="TREATMENT_PRODUCT"/>
+        <result property="treatmentDetail"  column="TREATMENT_DETAIL"/>
+        <result property="treatmentNote"    column="TREATMENT_NOTE"/>
+    </resultMap>
+
+    <select id="findDetailByVisitIdAndDesignerId" resultMap="visitDetailResultMap">
+        <!-- 방문 기록 상세 조회 (고객 정보 JOIN) -->
+        SELECT
+            v.VISIT_ID, v.CUSTOMER_ID, v.STATUS,
+            v.VISIT_ROUTE, v.REF_DESIGNER,
+            v.STYLES, v.MOODS, v.STYLE_IMAGE_IDS, v.HAIR_CONCERNS, v.REQUEST_MEMO,
+            v.TREATMENT_PRODUCT, v.TREATMENT_DETAIL, v.TREATMENT_NOTE,
+            v.VISIT_DT, v.SUBMIT_DT,
+            c.CUSTOMER_NAME, c.PHONE, c.GENDER
+        FROM tb_visit_record v
+        JOIN tb_customers c ON v.CUSTOMER_ID = c.CUSTOMER_ID
+        WHERE v.VISIT_ID = #{visitId}
+        AND v.DESIGNER_ID = #{designerId}
+    </select>
+
 </mapper>
