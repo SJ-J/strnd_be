@@ -11,6 +11,19 @@
         WHERE DESIGNER_NAME = #{designerName}
     </select>
 
+    <select id="findByPhone" parameterType="String" resultType="com.strnd.api.designer.domain.Designer">
+        <!-- 연락처로 디자이너 단건 조회 -->
+        SELECT DESIGNER_ID, DESIGNER_NAME, PIN_HASH, IS_ACTIVE, PHONE, LAST_LOGIN_DT, REG_DT, MOD_DT
+        FROM mg_designers
+        WHERE PHONE = #{phone}
+    </select>
+
+    <insert id="insert" parameterType="com.strnd.api.designer.domain.Designer" useGeneratedKeys="true" keyProperty="designerId">
+        <!-- 디자이너 신규 등록 -->
+        INSERT INTO mg_designers (DESIGNER_NAME, PHONE, PIN_HASH, IS_ACTIVE)
+        VALUES (#{designerName}, #{phone}, #{pinHash}, 1)
+    </insert>
+
     <update id="updateLastLoginDt" parameterType="Long">
         <!-- 로그인 성공 시 마지막 로그인 일시 갱신 -->
         UPDATE mg_designers

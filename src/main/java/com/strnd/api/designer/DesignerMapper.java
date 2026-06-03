@@ -11,6 +11,12 @@ public interface DesignerMapper {
     // 디자이너명으로 조회
     Optional<Designer> findByName(String designerName);
 
+    // 연락처로 조회
+    Optional<Designer> findByPhone(String phone);
+
+    // 디자이너 등록
+    void insert(Designer designer);
+
     // 마지막 로그인 일시 업데이트
     void updateLastLoginDt(Long designerId);
 }

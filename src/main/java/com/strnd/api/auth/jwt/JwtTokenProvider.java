@@ -20,6 +20,9 @@ public class JwtTokenProvider {
     @Value("${jwt.expiration}")
     private long expiration;
 
+    @Value("${jwt.expiration-remember-me}")
+    private long expirationRememberMe;
+
     // secret 문자열로 HMAC-SHA 서명 키 생성
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
@@ -27,13 +30,19 @@ public class JwtTokenProvider {
 
     // designerId(subject), designerName을 담은 JWT 토큰 생성
     public String generateToken(Long designerId, String designerName) {
+        return generateToken(designerId, designerName, false);
+    }
+
+    // rememberMe 여부에 따라 만료 시간 분기하여 JWT 토큰 생성
+    public String generateToken(Long designerId, String designerName, boolean rememberMe) {
+        long exp = rememberMe ? expirationRememberMe : expiration;
         return Jwts.builder()
             .subject(String.valueOf(designerId))
             .claim("designerName", designerName)
             .claim("role", "ROLE_DESIGNER")
             .issuedAt(new Date())
-            // 현재 시각 + expiration(ms)으로 만료 시각 설정
-            .expiration(new Date(System.currentTimeMillis() + expiration))
+            // 현재 시각 + exp(ms)으로 만료 시각 설정
+            .expiration(new Date(System.currentTimeMillis() + exp))
             .signWith(getSigningKey())
             .compact();
     }
