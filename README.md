@@ -320,7 +320,7 @@ Response `404` — 존재하지 않거나 미담당 visitId
 Request
 ```json
 {
-  "treatmentProduct": "로레알 샴푸, 케라틴 트리트먼트",
+  "treatmentProduct": "코비네 향긋 멍샴푸, 유호표 찰랑찰랑 트리트먼트",
   "treatmentDetail": "레이어드 커트, 볼륨 펌",
   "treatmentNote": "두피 민감 — 저자극 약품 사용"
 }
