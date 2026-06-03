@@ -46,6 +46,9 @@ src/main/java/com/strnd/api
 │   └── domain/
 ├── survey/                # 설문 (제출)
 │   └── dto/
+├── service/               # 시술 서비스 메뉴
+│   ├── dto/
+│   └── domain/
 ├── common/                # 전역 예외 처리, 공통 DTO, TypeHandler
 │   ├── dto/
 │   └── typehandler/
@@ -58,7 +61,8 @@ src/main/resources
     ├── customer/
     ├── home/
     ├── visit/
-    └── survey/
+    ├── survey/
+    └── service/
 ```
 
 <br>
@@ -257,6 +261,7 @@ Response `404` — 미담당 고객 ID
 |---|---|---|---|
 | POST | `/api/visits` | 필요 | 설문 시작 (방문 기록 생성) |
 | GET | `/api/visits/{visitId}` | 필요 | 방문 기록 단건 조회 |
+| PUT | `/api/visits/{visitId}/treatment` | 필요 | 시술 내용 기록 |
 
 **POST /api/visits**
 
@@ -309,6 +314,47 @@ Response `200`
 > 시술 기록 전이면 treatment 필드 전체 `null`
 
 Response `404` — 존재하지 않거나 미담당 visitId
+
+**PUT /api/visits/{visitId}/treatment**
+
+Request
+```json
+{
+  "treatmentProduct": "로레알 샴푸, 케라틴 트리트먼트",
+  "treatmentDetail": "레이어드 커트, 볼륨 펌",
+  "treatmentNote": "두피 민감 — 저자극 약품 사용"
+}
+```
+
+> 세 필드 모두 선택 사항
+
+Response `200`
+```json
+{ "message": "시술 내용이 기록되었습니다." }
+```
+
+Response `404` — 존재하지 않거나 미담당 visitId
+
+<br>
+
+### 🧴 Services
+
+| Method | URL | 인증 | 설명 |
+|---|---|---|---|
+| GET | `/api/services` | 필요 | 서비스(시술 메뉴) 목록 조회 |
+
+**GET /api/services**
+
+Response `200`
+```json
+[
+  { "serviceId": 30001, "serviceCode": "CUT", "serviceName": "커트", "sortOrder": 1 },
+  { "serviceId": 30002, "serviceCode": "PERM", "serviceName": "펌", "sortOrder": 2 },
+  { "serviceId": 30003, "serviceCode": "COLOR", "serviceName": "염색", "sortOrder": 3 }
+]
+```
+
+> `IS_ACTIVE = 1` 인 항목만, `SORT_ORDER` 오름차순 정렬
 
 <br>
 
