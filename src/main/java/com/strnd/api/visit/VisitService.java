@@ -27,19 +27,27 @@ public class VisitService {
     @Value("${app.frontend-base-url}")
     private String frontendBaseUrl;
 
-    // 설문 시작 (방문 기록 생성, SURVEY_TOKEN 발급)
+    // 설문 시작 또는 설문 없이 바로 기록 (skipSurvey 여부에 따라 분기)
     @Transactional
     public VisitStartResponse startVisit(Long designerId, VisitStartRequest request) {
         // 고객 소유권 검증
         customerMapper.findByCustomerIdAndDesignerId(request.getCustomerId(), designerId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "고객을 찾을 수 없습니다."));
 
+        if (request.isSkipSurvey()) {
+            return createVisitWithoutSurvey(designerId, request.getCustomerId());
+        }
+        return createVisitWithSurvey(designerId, request.getCustomerId());
+    }
+
+    // 설문 포함 방문 생성 (PENDING + 토큰 발급)
+    private VisitStartResponse createVisitWithSurvey(Long designerId, Long customerId) {
         // 토큰 생성 및 당일 자정 만료 설정
         String token = UUID.randomUUID().toString().replace("-", "");
         LocalDateTime tokenExpiresDt = LocalDate.now().plusDays(1).atStartOfDay();
 
         VisitRecord visit = VisitRecord.builder()
-                .customerId(request.getCustomerId())
+                .customerId(customerId)
                 .designerId(designerId)
                 .surveyToken(token)
                 .tokenExpiresDt(tokenExpiresDt)
@@ -48,14 +56,28 @@ public class VisitService {
                 .build();
 
         visitMapper.insert(visit);
-
-        // 고객 마지막 방문일 갱신
-        customerMapper.updateLastVisitDt(request.getCustomerId(), designerId, LocalDateTime.now());
+        customerMapper.updateLastVisitDt(customerId, designerId, LocalDateTime.now());
 
         return VisitStartResponse.builder()
                 .visitId(visit.getVisitId())
                 .surveyToken(token)
                 .surveyUrl(frontendBaseUrl + "/survey/" + token)
+                .build();
+    }
+
+    // 설문 없이 바로 기록 (COMPLETED, 토큰 없음)
+    private VisitStartResponse createVisitWithoutSurvey(Long designerId, Long customerId) {
+        VisitRecord visit = VisitRecord.builder()
+                .customerId(customerId)
+                .designerId(designerId)
+                .visitDt(LocalDateTime.now())
+                .build();
+
+        visitMapper.insertSkipSurvey(visit);
+        customerMapper.updateLastVisitDt(customerId, designerId, LocalDateTime.now());
+
+        return VisitStartResponse.builder()
+                .visitId(visit.getVisitId())
                 .build();
     }
 

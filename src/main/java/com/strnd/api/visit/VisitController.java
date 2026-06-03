@@ -20,9 +20,9 @@ public class VisitController {
     private final VisitService visitService;
 
     /**
-     * 설문 시작 (방문 기록 생성)
-     * @param request customerId
-     * @return visitId, surveyToken, surveyUrl
+     * 방문 기록 생성 (설문 시작 또는 설문 없이 바로 기록)
+     * @param request customerId, skipSurvey(false: 설문 시작 / true: 설문 없이 바로 기록)
+     * @return skipSurvey=false: visitId + surveyToken + surveyUrl / skipSurvey=true: visitId만 반환
      * @since 2026-06-03
      * @author SJ-J
      */
