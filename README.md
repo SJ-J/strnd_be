@@ -8,7 +8,8 @@
 
 | 환경 | URL |
 |---|---|
-| Production | https://strnd-be.onrender.com |
+| Production (Backend) | https://strnd-be.onrender.com |
+| Production (Frontend) | https://strnd.vercel.app |
 | Health Check | https://strnd-be.onrender.com/health |
 
 <br>
