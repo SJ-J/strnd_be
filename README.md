@@ -479,13 +479,15 @@ Request
 {
   "visitRoute": "SNS",
   "refDesigner": "임희진",
-  "styles": ["내추럴", "시크"],
+  "serviceId": 3,
   "moods": ["깔끔하고 단정한", "세련되고 고급스러운"],
-  "styleImageIds": [30001, 30002],
+  "styleImageIds": [1, 2],
   "hairConcerns": ["모발 손상", "볼륨 부족"],
   "requestMemo": "숱 많이 쳐주세요"
 }
 ```
+> `serviceId` — mg_services의 SERVICE_ID (설문 STEP1 선택값)
+>
 > 모든 필드 생략 가능 (`visitRoute`, `refDesigner`, 각 배열 필드)
 
 Response `200`
