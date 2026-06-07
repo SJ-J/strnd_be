@@ -310,21 +310,34 @@ Response `404` — 미담당 고객 ID
 
 **GET /api/customers/{customerId}/visits**
 
+| 파라미터 | 타입 | 필수 | 설명 |
+|---------|------|------|------|
+| `serviceCodes` | String (다중) | 선택 | 서비스 코드 필터 (CUT / PERM / COLOR / CLINIC / ETC) |
+| `startDate` | yyyy-MM-dd | 선택 | 조회 시작일 |
+| `endDate` | yyyy-MM-dd | 선택 | 조회 종료일 |
+
+```
+GET /api/customers/1/visits?serviceCodes=CUT&serviceCodes=COLOR&startDate=2026-01-01&endDate=2026-06-07
+```
+
 Response `200`
 ```json
 [
   {
-    "visitId": 60001,
+    "visitId": 1,
     "status": "COMPLETED",
-    "visitDt": "2026-06-03T10:10:42",
-    "treatmentProduct": "코비네 향긋 멍샴푸, 유호표 찰랑찰랑 트리트먼트",
-    "treatmentDetail": "하이 레이어드 커트",
-    "treatmentNote": "탈색모 - 클리닉 서비스"
+    "visitDt": "2026-06-07T10:10:42",
+    "services": "COLOR",
+    "treatmentProduct": "웰라 7NB",
+    "treatmentDetail": "7NB 0.6 톤다운",
+    "treatmentNote": "두피 민감"
   }
 ]
 ```
 
 > 최신 방문순(VISIT_DT 내림차순) 정렬
+>
+> 파라미터 미입력 시 전체 조회
 >
 > 시술 기록 전이면 treatment 필드 전체 `null`
 
@@ -335,24 +348,25 @@ Response `404` — 존재하지 않거나 미담당 customerId
 Response `200`
 ```json
 {
-  "visitId": 60001,
-  "status": "SUBMITTED",
-  "visitDt": "2026-06-03T10:10:42",
-  "submitDt": "2026-06-03T01:14:16",
+  "visitId": 1,
+  "status": "COMPLETED",
+  "visitDt": "2026-06-07T10:10:42",
+  "submitDt": "2026-06-07T01:14:16",
   "customerId": 1,
   "customerName": "주수진",
   "phone": "01019931219",
   "gender": "FEMALE",
   "visitRoute": "SNS",
   "refDesigner": "임희진",
-  "styles": ["내추럴", "시크"],
+  "services": "COLOR",
   "moods": ["깔끔하고 단정한", "세련되고 고급스러운"],
-  "styleImageIds": [30001, 30002],
+  "styleImageIds": [1, 2],
   "hairConcerns": ["모발 손상", "볼륨 부족"],
   "requestMemo": "숱 많이 쳐주세요",
-  "treatmentProduct": null,
-  "treatmentDetail": null,
-  "treatmentNote": null
+  "treatmentMenu": ["시세이도 컬러", "기본 클리닉"],
+  "treatmentProduct": "웰라 7NB",
+  "treatmentDetail": "7NB 0.6 톤다운",
+  "treatmentNote": "두피 민감"
 }
 ```
 
@@ -367,13 +381,19 @@ Response `404` — 존재하지 않거나 미담당 visitId
 Request
 ```json
 {
-  "treatmentProduct": "코비네 향긋 멍샴푸, 유호표 찰랑찰랑 트리트먼트",
-  "treatmentDetail": "레이어드 커트, 볼륨 펌",
-  "treatmentNote": "두피 민감 — 저자극 약품 사용"
+  "serviceCode": "COLOR",
+  "treatmentMenu": ["시세이도 컬러", "기본 클리닉"],
+  "treatmentProduct": "웰라 7NB",
+  "treatmentDetail": "7NB 0.6 톤다운",
+  "treatmentNote": "두피 민감"
 }
 ```
 
-> 세 필드 모두 선택 사항
+> `serviceCode` — 필수. 고객 설문의 `services` 값을 기본으로 노출하고 디자이너가 변경 가능
+>
+> `treatmentMenu` — 필수. 시술 메뉴명 배열 (콤마 구분 자유 입력)
+>
+> `treatmentProduct`, `treatmentDetail`, `treatmentNote` — 선택
 
 Response `200`
 ```json
@@ -395,9 +415,11 @@ Response `404` — 존재하지 않거나 미담당 visitId
 Response `200`
 ```json
 [
-  { "serviceId": 30001, "serviceCode": "CUT", "serviceName": "커트", "sortOrder": 1 },
-  { "serviceId": 30002, "serviceCode": "PERM", "serviceName": "펌", "sortOrder": 2 },
-  { "serviceId": 30003, "serviceCode": "COLOR", "serviceName": "염색", "sortOrder": 3 }
+  { "serviceId": 1, "serviceCode": "CUT",    "serviceName": "컷",    "sortOrder": 1 },
+  { "serviceId": 2, "serviceCode": "PERM",   "serviceName": "펌",    "sortOrder": 2 },
+  { "serviceId": 3, "serviceCode": "COLOR",  "serviceName": "컬러",  "sortOrder": 3 },
+  { "serviceId": 4, "serviceCode": "CLINIC", "serviceName": "클리닉","sortOrder": 4 },
+  { "serviceId": 5, "serviceCode": "ETC",    "serviceName": "상담",  "sortOrder": 5 }
 ]
 ```
 
@@ -413,22 +435,34 @@ Response `200`
 
 **GET /api/style-images**
 
+| 파라미터 | 타입 | 필수 | 설명 |
+|---------|------|------|------|
+| `gender` | String | 선택 | 성별 필터 (MALE / FEMALE) |
+| `serviceCode` | String | 선택 | 서비스 코드 필터 (CUT / PERM / COLOR / CLINIC / ETC) |
+
+```
+GET /api/style-images?gender=FEMALE&serviceCode=COLOR
+```
+
 Response `200`
 ```json
 [
   {
-    "imageId": 30001,
-    "serviceId": 30001,
-    "imageUrl": "https://example.com/cut-style.jpg",
-    "imageAlt": "커트 스타일 예시",
-    "sortOrder": 0
+    "imageId": 1,
+    "serviceId": 3,
+    "gender": "FEMALE",
+    "imageUrl": "https://example.com/color-style.jpg",
+    "imageAlt": "컬러 스타일 예시",
+    "sortOrder": 1
   }
 ]
 ```
 
 > `IS_ACTIVE = 1` 인 항목만, `SERVICE_ID → SORT_ORDER` 오름차순 정렬
 >
-> 인증 불필요 (설문 step3 이미지 선택용)
+> 파라미터 미입력 시 전체 조회
+>
+> 인증 불필요 (설문 STEP3 이미지 선택용 — 고객 성별·선택 서비스 기준 필터링)
 
 <br>
 
