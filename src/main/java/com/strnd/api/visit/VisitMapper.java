@@ -6,7 +6,9 @@ import com.strnd.api.visit.dto.VisitHistoryResponse;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.LocalDate;
 import java.util.List;
+
 
 @Mapper
 public interface VisitMapper {
@@ -25,10 +27,16 @@ public interface VisitMapper {
 
     // 시술 내용 기록 및 STATUS='COMPLETED' 변경
     void updateTreatment(@Param("visitId") Long visitId, @Param("designerId") Long designerId,
+                        @Param("serviceCode") String serviceCode,
+                        @Param("treatmentMenu") java.util.List<String> treatmentMenu,
                         @Param("treatmentProduct") String treatmentProduct,
                         @Param("treatmentDetail") String treatmentDetail,
                         @Param("treatmentNote") String treatmentNote);
 
-    // 고객의 방문 히스토리 목록 조회 (최신순)
-    List<VisitHistoryResponse> findHistoryByCustomerIdAndDesignerId(@Param("customerId") Long customerId, @Param("designerId") Long designerId);
+    // 고객 방문 히스토리 목록 조회 (서비스, 기간 필터, 최신순)
+    List<VisitHistoryResponse> findHistoryByFilter(@Param("customerId") Long customerId,
+                                                @Param("designerId") Long designerId,
+                                                @Param("serviceCodes") List<String> serviceCodes,
+                                                @Param("startDate") LocalDate startDate,
+                                                @Param("endDate") LocalDate endDate);
 }

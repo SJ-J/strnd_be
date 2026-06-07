@@ -13,4 +13,11 @@
         ORDER BY SORT_ORDER ASC
     </select>
 
+    <select id="findById" resultType="com.strnd.api.service.domain.Service">
+        <!-- 서비스 ID로 단건 조회 -->
+        SELECT SERVICE_ID, SERVICE_CODE, SERVICE_NAME, IS_ACTIVE, SORT_ORDER
+        FROM mg_services
+        WHERE SERVICE_ID = #{serviceId}
+    </select>
+
 </mapper>

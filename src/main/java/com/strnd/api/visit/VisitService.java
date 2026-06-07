@@ -94,12 +94,14 @@ public class VisitService {
         return detail;
     }
 
-    // 고객 방문 히스토리 목록 조회 (최신순)
-    public List<VisitHistoryResponse> getVisitHistory(Long designerId, Long customerId) {
+    // 고객 방문 히스토리 목록 조회 (서비스·기간 필터, 최신순)
+    public List<VisitHistoryResponse> getVisitHistory(Long designerId, Long customerId,
+                                                    List<String> serviceCodes,
+                                                    LocalDate startDate, LocalDate endDate) {
         // 고객 소유권 검증
         customerMapper.findByCustomerIdAndDesignerId(customerId, designerId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "고객을 찾을 수 없습니다."));
-        return visitMapper.findHistoryByCustomerIdAndDesignerId(customerId, designerId);
+        return visitMapper.findHistoryByFilter(customerId, designerId, serviceCodes, startDate, endDate);
     }
 
     // 시술 내용 기록 (STATUS -> COMPLETED)
@@ -112,6 +114,8 @@ public class VisitService {
         }
         // 시술 내용 저장 및 상태 변경
         visitMapper.updateTreatment(visitId, designerId,
+                request.getServiceCode(),
+                request.getTreatmentMenu(),
                 request.getTreatmentProduct(),
                 request.getTreatmentDetail(),
                 request.getTreatmentNote());

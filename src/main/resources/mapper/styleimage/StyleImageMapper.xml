@@ -4,13 +4,20 @@
 
 <mapper namespace="com.strnd.api.styleimage.StyleImageMapper">
 
-    <select id="findAllActive" resultType="com.strnd.api.styleimage.domain.StyleImage">
-        <!-- 활성 스타일 이미지 전체 조회 (서비스 순, 정렬 순서 기준) -->
+    <select id="findByFilter" resultType="com.strnd.api.styleimage.domain.StyleImage">
+        <!-- 활성 스타일 이미지 조회 (성별, 서비스 코드 필터) -->
         SELECT
-            IMAGE_ID, SERVICE_ID, IMAGE_URL, IMAGE_ALT, IS_ACTIVE, SORT_ORDER
-        FROM mg_style_images
-        WHERE IS_ACTIVE = 1
-        ORDER BY SERVICE_ID ASC, SORT_ORDER ASC
+            i.IMAGE_ID, i.SERVICE_ID, i.GENDER, i.IMAGE_URL, i.IMAGE_ALT, i.IS_ACTIVE, i.SORT_ORDER
+        FROM mg_style_images i
+        JOIN mg_services s ON i.SERVICE_ID = s.SERVICE_ID
+        WHERE i.IS_ACTIVE = 1
+        <if test="gender != null and gender != ''">
+            AND i.GENDER = #{gender}
+        </if>
+        <if test="serviceCode != null and serviceCode != ''">
+            AND s.SERVICE_CODE = #{serviceCode}
+        </if>
+        ORDER BY i.SERVICE_ID ASC, i.SORT_ORDER ASC
     </select>
 
 </mapper>

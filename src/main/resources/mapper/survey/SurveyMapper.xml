@@ -20,7 +20,7 @@
             STATUS       = 'SUBMITTED',
             VISIT_ROUTE  = #{visit.visitRoute},
             REF_DESIGNER = #{visit.refDesigner},
-            STYLES       = #{visit.styles, typeHandler=com.strnd.api.common.typehandler.JsonStringListTypeHandler},
+            SERVICES     = #{visit.services},
             MOODS        = #{visit.moods, typeHandler=com.strnd.api.common.typehandler.JsonStringListTypeHandler},
             STYLE_IMAGE_IDS = #{visit.styleImageIds, typeHandler=com.strnd.api.common.typehandler.JsonLongListTypeHandler},
             HAIR_CONCERNS   = #{visit.hairConcerns, typeHandler=com.strnd.api.common.typehandler.JsonStringListTypeHandler},

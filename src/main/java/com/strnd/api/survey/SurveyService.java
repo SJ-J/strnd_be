@@ -1,5 +1,6 @@
 package com.strnd.api.survey;
 
+import com.strnd.api.service.ServiceMapper;
 import com.strnd.api.survey.dto.SurveySubmitRequest;
 import com.strnd.api.visit.domain.VisitRecord;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 public class SurveyService {
 
     private final SurveyMapper surveyMapper;
+    private final ServiceMapper serviceMapper;
 
     // 설문 제출 (토큰 유효성 검증 후 설문 데이터 저장)
     @Transactional
@@ -35,10 +37,20 @@ public class SurveyService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 제출된 설문입니다.");
         }
 
+        // serviceId -> serviceCode 변환
+        String serviceCode = null;
+        if (request.getServiceId() != null) {
+            com.strnd.api.service.domain.Service service = serviceMapper.findById(request.getServiceId());
+            if (service == null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "유효하지 않은 서비스 ID입니다.");
+            }
+            serviceCode = service.getServiceCode();
+        }
+
         // 제출 데이터 세팅
         visit.setVisitRoute(request.getVisitRoute());
         visit.setRefDesigner(request.getRefDesigner());
-        visit.setStyles(request.getStyles());
+        visit.setServices(serviceCode);
         visit.setMoods(request.getMoods());
         visit.setStyleImageIds(request.getStyleImageIds());
         visit.setHairConcerns(request.getHairConcerns());

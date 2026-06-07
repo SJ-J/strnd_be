@@ -10,6 +10,7 @@ public class StyleImageResponse {
 
     private Long imageId;       // 이미지 ID
     private Long serviceId;     // 서비스 ID
+    private String gender;      // 대상 성별 (FEMALE/MALE)
     private String imageUrl;    // 이미지 URL
     private String imageAlt;    // 이미지 설명
     private Integer sortOrder;  // 정렬 순서
@@ -19,6 +20,7 @@ public class StyleImageResponse {
         return StyleImageResponse.builder()
                 .imageId(image.getImageId())
                 .serviceId(image.getServiceId())
+                .gender(image.getGender())
                 .imageUrl(image.getImageUrl())
                 .imageAlt(image.getImageAlt())
                 .sortOrder(image.getSortOrder())

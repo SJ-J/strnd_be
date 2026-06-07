@@ -9,6 +9,7 @@ public class StyleImage {
 
     private Long imageId;       // 이미지 ID
     private Long serviceId;     // 서비스 ID
+    private String gender;      // 대상 성별 (FEMALE/MALE)
     private String imageUrl;    // 이미지 URL
     private String imageAlt;    // 이미지 설명
     private Boolean isActive;   // 활성 여부

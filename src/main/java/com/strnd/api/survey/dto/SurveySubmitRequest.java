@@ -13,8 +13,10 @@ public class SurveySubmitRequest {
     private String visitRoute;         // 방문 경로
     private String refDesigner;        // 소개 디자이너 (nullable)
 
-    // STEP2: 선호 스타일·무드
-    private List<String> styles;       // 선호 스타일
+    // STEP1: 서비스 선택
+    private Long serviceId;            // 선택 서비스 ID (단일)
+
+    // STEP2: 선호 무드
     private List<String> moods;        // 선호 무드
 
     // STEP3: 참고 이미지

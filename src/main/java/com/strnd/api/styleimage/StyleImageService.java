@@ -13,9 +13,9 @@ public class StyleImageService {
 
     private final StyleImageMapper styleImageMapper;
 
-    // 활성 스타일 이미지 목록 조회
-    public List<StyleImageResponse> getStyleImages() {
-        return styleImageMapper.findAllActive().stream()
+    // 활성 스타일 이미지 조회 (성별, 서비스 코드 필터)
+    public List<StyleImageResponse> getStyleImages(String gender, String serviceCode) {
+        return styleImageMapper.findByFilter(gender, serviceCode).stream()
                 .map(StyleImageResponse::from)
                 .collect(Collectors.toList());
     }

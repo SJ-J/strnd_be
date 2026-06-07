@@ -23,8 +23,10 @@ public class VisitRecord {
     private String refDesigner;             // 소개 디자이너
     private String visitRoute;              // 방문 경로
 
+    // 설문 STEP1
+    private String services;               // 선택 서비스 코드 (SERVICE_CODE)
+
     // 설문 STEP2
-    private List<String> styles;            // 선호 스타일
     private List<String> moods;             // 선호 무드
 
     // 설문 STEP3
@@ -37,6 +39,7 @@ public class VisitRecord {
     private String requestMemo;             // 추가 요청사항
 
     // 시술 기록
+    private String treatmentMenu;           // 시술 메뉴
     private String treatmentProduct;        // 사용 약품
     private String treatmentDetail;         // 시술 내용
     private String treatmentNote;           // 시술 특이사항

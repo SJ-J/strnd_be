@@ -6,11 +6,13 @@ import com.strnd.api.visit.VisitService;
 import com.strnd.api.visit.dto.VisitHistoryResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -71,18 +73,24 @@ public class CustomerController {
     }
 
     /**
-     * 고객 방문 히스토리 조회
+     * 고객 방문 히스토리 조회 (서비스, 기간 필터)
      * @param customerId 조회할 고객 ID
+     * @param serviceCodes 서비스 코드 목록 (선택, 다중)
+     * @param startDate 조회 시작일 (선택, yyyy-MM-dd)
+     * @param endDate 조회 종료일 (선택, yyyy-MM-dd)
      * @return 방문 기록 목록 (최신순)
-     * @since 2026-06-03
+     * @since 2026-06-07
      * @author SJ-J
      */
     @GetMapping("/{customerId}/visits")
     public ResponseEntity<List<VisitHistoryResponse>> getVisitHistory(
             @AuthenticationPrincipal String designerIdStr,
-            @PathVariable Long customerId) {
+            @PathVariable Long customerId,
+            @RequestParam(required = false) List<String> serviceCodes,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
         Long designerId = Long.parseLong(designerIdStr);
-        return ResponseEntity.ok(visitService.getVisitHistory(designerId, customerId));
+        return ResponseEntity.ok(visitService.getVisitHistory(designerId, customerId, serviceCodes, startDate, endDate));
     }
 
     /**

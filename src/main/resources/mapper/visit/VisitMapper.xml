@@ -50,8 +50,7 @@
         <!-- 설문 -->
         <result property="visitRoute"       column="VISIT_ROUTE"/>
         <result property="refDesigner"      column="REF_DESIGNER"/>
-        <result property="styles"           column="STYLES"
-                typeHandler="com.strnd.api.common.typehandler.JsonStringListTypeHandler"/>
+        <result property="services"         column="SERVICES"/>
         <result property="moods"            column="MOODS"
                 typeHandler="com.strnd.api.common.typehandler.JsonStringListTypeHandler"/>
         <result property="styleImageIds"    column="STYLE_IMAGE_IDS"
@@ -60,6 +59,8 @@
                 typeHandler="com.strnd.api.common.typehandler.JsonStringListTypeHandler"/>
         <result property="requestMemo"      column="REQUEST_MEMO"/>
         <!-- 시술 기록 -->
+        <result property="treatmentMenu"    column="TREATMENT_MENU"
+                typeHandler="com.strnd.api.common.typehandler.JsonStringListTypeHandler"/>
         <result property="treatmentProduct" column="TREATMENT_PRODUCT"/>
         <result property="treatmentDetail"  column="TREATMENT_DETAIL"/>
         <result property="treatmentNote"    column="TREATMENT_NOTE"/>
@@ -70,8 +71,8 @@
         SELECT
             v.VISIT_ID, v.CUSTOMER_ID, v.STATUS,
             v.VISIT_ROUTE, v.REF_DESIGNER,
-            v.STYLES, v.MOODS, v.STYLE_IMAGE_IDS, v.HAIR_CONCERNS, v.REQUEST_MEMO,
-            v.TREATMENT_PRODUCT, v.TREATMENT_DETAIL, v.TREATMENT_NOTE,
+            v.SERVICES, v.MOODS, v.STYLE_IMAGE_IDS, v.HAIR_CONCERNS, v.REQUEST_MEMO,
+            v.TREATMENT_MENU, v.TREATMENT_PRODUCT, v.TREATMENT_DETAIL, v.TREATMENT_NOTE,
             v.VISIT_DT, v.SUBMIT_DT,
             c.CUSTOMER_NAME, c.PHONE, c.GENDER
         FROM tb_visit_record v
@@ -81,14 +82,36 @@
     </select>
 
 
-    <select id="findHistoryByCustomerIdAndDesignerId" resultType="com.strnd.api.visit.dto.VisitHistoryResponse">
-        <!-- 고객 방문 히스토리 목록 조회 (최신순) -->
+    <resultMap id="visitHistoryResultMap" type="com.strnd.api.visit.dto.VisitHistoryResponse">
+        <result property="visitId"          column="VISIT_ID"/>
+        <result property="status"           column="STATUS"/>
+        <result property="visitDt"          column="VISIT_DT"/>
+        <result property="services"         column="SERVICES"/>
+        <result property="treatmentProduct" column="TREATMENT_PRODUCT"/>
+        <result property="treatmentDetail"  column="TREATMENT_DETAIL"/>
+        <result property="treatmentNote"    column="TREATMENT_NOTE"/>
+    </resultMap>
+
+    <select id="findHistoryByFilter" resultMap="visitHistoryResultMap">
+        <!-- 고객 방문 히스토리 목록 조회 (최신순, 서비스, 기간 필터 선택) -->
         SELECT
-            VISIT_ID, STATUS, VISIT_DT,
+            VISIT_ID, STATUS, VISIT_DT, SERVICES,
             TREATMENT_PRODUCT, TREATMENT_DETAIL, TREATMENT_NOTE
         FROM tb_visit_record
-        WHERE CUSTOMER_ID  = #{customerId}
-        AND   DESIGNER_ID  = #{designerId}
+        WHERE CUSTOMER_ID = #{customerId}
+        AND   DESIGNER_ID = #{designerId}
+        <if test="startDate != null">
+            AND VISIT_DT &gt;= #{startDate}
+        </if>
+        <if test="endDate != null">
+            AND VISIT_DT &lt; DATE_ADD(#{endDate}, INTERVAL 1 DAY)
+        </if>
+        <if test="serviceCodes != null and serviceCodes.size() > 0">
+            AND SERVICES IN
+            <foreach collection="serviceCodes" item="code" open="(" separator="," close=")">
+                #{code}
+            </foreach>
+        </if>
         ORDER BY VISIT_DT DESC
     </select>
 
@@ -96,6 +119,8 @@
         <!-- 시술 내용 기록 및 상태 COMPLETED 변경 -->
         UPDATE tb_visit_record
         SET
+            SERVICES          = #{serviceCode},
+            TREATMENT_MENU    = #{treatmentMenu, typeHandler=com.strnd.api.common.typehandler.JsonStringListTypeHandler},
             TREATMENT_PRODUCT = #{treatmentProduct},
             TREATMENT_DETAIL  = #{treatmentDetail},
             TREATMENT_NOTE    = #{treatmentNote},

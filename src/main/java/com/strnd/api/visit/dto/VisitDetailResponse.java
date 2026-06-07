@@ -7,6 +7,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,8 +29,10 @@ public class VisitDetailResponse {
     private String visitRoute;
     private String refDesigner;
 
+    // 설문 STEP1
+    private String services;
+
     // 설문 STEP2
-    private List<String> styles;
     private List<String> moods;
 
     // 설문 STEP3
@@ -42,6 +45,7 @@ public class VisitDetailResponse {
     private String requestMemo;
 
     // 시술 기록
+    private List<String> treatmentMenu;
     private String treatmentProduct;
     private String treatmentDetail;
     private String treatmentNote;
