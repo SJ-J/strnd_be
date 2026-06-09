@@ -50,8 +50,8 @@ public class CustomerService {
                 .designerId(designerId)
                 .customerName(request.getCustomerName())
                 .phone(request.getPhone())
-                .gender(request.getGender())
-                .memo(request.getMemo())
+                .gender(blankToNull(request.getGender()))
+                .memo(blankToNull(request.getMemo()))
                 .build();
 
         try {
@@ -81,8 +81,8 @@ public class CustomerService {
                 .designerId(designerId)
                 .customerName(request.getCustomerName())
                 .phone(request.getPhone())
-                .gender(request.getGender())
-                .memo(request.getMemo())
+                .gender(blankToNull(request.getGender()))
+                .memo(blankToNull(request.getMemo()))
                 .build();
 
         try {
@@ -97,10 +97,15 @@ public class CustomerService {
         return CustomerResponse.from(updated);
     }
 
+    // 빈 문자열을 null로 변환
+    private String blankToNull(String value) {
+        return (value == null || value.isBlank()) ? null : value;
+    }
+
     // 성별 값 유효성 검사
     private void validateGender(String gender) {
-        if (gender != null && !VALID_GENDERS.contains(gender)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "유효하지 않은 성별 값입니다. (MALE/FEMALE/OTHER)");
+        if (gender != null && !gender.isBlank() && !VALID_GENDERS.contains(gender)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "유효하지 않은 성별 값입니다. (FEMALE/MALE)");
         }
     }
 }

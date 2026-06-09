@@ -1,5 +1,7 @@
 package com.strnd.api.survey.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +12,10 @@ import java.util.List;
 public class SurveySubmitRequest {
 
     // STEP0: 기본 정보
+    @NotBlank(message = "성별은 필수입니다.")
+    @Pattern(regexp = "FEMALE|MALE", message = "유효하지 않은 성별 값입니다.")
+    private String gender;             // 성별
+
     private String visitRoute;         // 방문 경로
     private String refDesigner;        // 소개 디자이너 (nullable)
 

@@ -1,5 +1,6 @@
 package com.strnd.api.survey;
 
+import com.strnd.api.customer.CustomerMapper;
 import com.strnd.api.service.ServiceMapper;
 import com.strnd.api.survey.dto.SurveySubmitRequest;
 import com.strnd.api.visit.domain.VisitRecord;
@@ -17,6 +18,7 @@ public class SurveyService {
 
     private final SurveyMapper surveyMapper;
     private final ServiceMapper serviceMapper;
+    private final CustomerMapper customerMapper;
 
     // 설문 제출 (토큰 유효성 검증 후 설문 데이터 저장)
     @Transactional
@@ -48,15 +50,23 @@ public class SurveyService {
         }
 
         // 제출 데이터 세팅
-        visit.setVisitRoute(request.getVisitRoute());
-        visit.setRefDesigner(request.getRefDesigner());
+        visit.setVisitRoute(blankToNull(request.getVisitRoute()));
+        visit.setRefDesigner(blankToNull(request.getRefDesigner()));
         visit.setServices(serviceCode);
         visit.setMoods(request.getMoods());
         visit.setStyleImageIds(request.getStyleImageIds());
         visit.setHairConcerns(request.getHairConcerns());
-        visit.setRequestMemo(request.getRequestMemo());
+        visit.setRequestMemo(blankToNull(request.getRequestMemo()));
 
         // 설문 제출 저장 (STATUS='SUBMITTED')
         surveyMapper.submitSurvey(visit);
+
+        // 고객 성별 갱신
+        customerMapper.updateGender(visit.getCustomerId(), request.getGender());
+    }
+
+    // 빈 문자열을 null로 변환
+    private String blankToNull(String value) {
+        return (value == null || value.isBlank()) ? null : value;
     }
 }

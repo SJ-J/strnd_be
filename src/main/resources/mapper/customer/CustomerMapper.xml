@@ -52,6 +52,14 @@
         AND DESIGNER_ID = #{designerId}
     </update>
 
+    <update id="updateGender">
+        <!-- 성별 갱신 (설문 제출 시) -->
+        UPDATE tb_customers
+        SET GENDER = #{gender},
+            MOD_DT = NOW()
+        WHERE CUSTOMER_ID = #{customerId}
+    </update>
+
     <update id="update" parameterType="com.strnd.api.customer.domain.Customer">
         <!-- 고객 정보 수정 -->
         UPDATE tb_customers

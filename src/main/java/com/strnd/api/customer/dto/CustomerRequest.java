@@ -12,7 +12,6 @@ public class CustomerRequest {
     private String customerName; // 고객명(필수)
     @NotBlank(message = "연락처를 입력해 주세요.")
     private String phone;        // 연락처(필수)
-    @NotBlank(message = "성별을 입력해 주세요.")
-    private String gender;       // 성별(MALE/FEMALE/OTHER, 필수)
+    private String gender;       // 성별(FEMALE/MALE, nullable)
     private String memo;         // 메모(선택)
 }

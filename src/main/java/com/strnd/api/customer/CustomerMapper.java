@@ -28,4 +28,7 @@ public interface CustomerMapper {
 
     // 마지막 방문일 갱신
     void updateLastVisitDt(@Param("customerId") Long customerId, @Param("designerId") Long designerId, @Param("lastVisitDt") LocalDateTime lastVisitDt);
+
+    // 성별 갱신 (설문 제출 시)
+    void updateGender(@Param("customerId") Long customerId, @Param("gender") String gender);
 }

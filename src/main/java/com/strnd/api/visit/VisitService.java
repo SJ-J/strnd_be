@@ -116,8 +116,13 @@ public class VisitService {
         visitMapper.updateTreatment(visitId, designerId,
                 request.getServiceCode(),
                 request.getTreatmentMenu(),
-                request.getTreatmentProduct(),
-                request.getTreatmentDetail(),
-                request.getTreatmentNote());
+                blankToNull(request.getTreatmentProduct()),
+                blankToNull(request.getTreatmentDetail()),
+                blankToNull(request.getTreatmentNote()));
+    }
+
+    // 빈 문자열을 null로 변환
+    private String blankToNull(String value) {
+        return (value == null || value.isBlank()) ? null : value;
     }
 }

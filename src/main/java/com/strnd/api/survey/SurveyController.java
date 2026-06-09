@@ -3,6 +3,7 @@ package com.strnd.api.survey;
 import com.strnd.api.common.dto.MessageResponse;
 import com.strnd.api.survey.dto.SurveySubmitRequest;
 import lombok.RequiredArgsConstructor;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +25,7 @@ public class SurveyController {
     @PostMapping("/{token}")
     public ResponseEntity<MessageResponse> submitSurvey(
             @PathVariable String token,
-            @RequestBody SurveySubmitRequest request) {
+            @Valid @RequestBody SurveySubmitRequest request) {
         surveyService.submitSurvey(token, request);
         return ResponseEntity.ok(new MessageResponse("설문이 제출되었습니다."));
     }
