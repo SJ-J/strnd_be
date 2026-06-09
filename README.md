@@ -243,7 +243,7 @@ Request
   "memo": "반려견과 같은 헤어스타일 희망해요"
 }
 ```
-> `gender` — `MALE` / `FEMALE` / `OTHER` 중 하나, 생략 가능 (설문 제출 시 자동 갱신)
+> `gender` — `FEMALE` / `MALE` 중 하나, 생략 가능 (설문 제출 시 자동 갱신)
 >
 > `memo` 생략 가능
 
@@ -437,7 +437,7 @@ Response `200`
 
 | 파라미터 | 타입 | 필수 | 설명 |
 |---------|------|------|------|
-| `gender` | String | 선택 | 성별 필터 (MALE / FEMALE) |
+| `gender` | String | 선택 | 성별 필터 (FEMALE / MALE) |
 | `serviceCode` | String | 선택 | 서비스 코드 필터 (CUT / PERM / COLOR / CLINIC / ETC) |
 
 ```
@@ -477,6 +477,7 @@ Response `200`
 Request
 ```json
 {
+  "gender": "FEMALE",
   "visitRoute": "SNS",
   "refDesigner": "임희진",
   "serviceId": 3,
@@ -486,9 +487,11 @@ Request
   "requestMemo": "숱 많이 쳐주세요"
 }
 ```
+> `gender` — `FEMALE` / `MALE` 중 하나 (필수, STEP0)
+>
 > `serviceId` — mg_services의 SERVICE_ID (설문 STEP1 선택값)
 >
-> 모든 필드 생략 가능 (`visitRoute`, `refDesigner`, 각 배열 필드)
+> `gender` 외 모든 필드 생략 가능 (`visitRoute`, `refDesigner`, 각 배열 필드)
 
 Response `200`
 ```json
