@@ -243,7 +243,7 @@ Request
   "memo": "반려견과 같은 헤어스타일 희망해요"
 }
 ```
-> `gender` — `MALE` / `FEMALE` / `OTHER` 중 하나 (필수)
+> `gender` — `MALE` / `FEMALE` / `OTHER` 중 하나, 생략 가능 (설문 제출 시 자동 갱신)
 >
 > `memo` 생략 가능
 
