@@ -324,13 +324,17 @@ Response `200`
 ```json
 [
   {
-    "visitId": 1,
+    "visitId": 10,
     "status": "COMPLETED",
-    "visitDt": "2026-06-07T10:10:42",
+    "visitDt": "2026-06-07T17:11:33",
     "services": "COLOR",
-    "treatmentProduct": "웰라 7NB",
+    "treatmentMenu": [
+      "코비네 특급 무손상 탈색제",
+      "프리미엄 클리닉"
+    ],
+    "treatmentProduct": "유호표 7NB",
     "treatmentDetail": "7NB 0.6 톤다운",
-    "treatmentNote": "두피 민감"
+    "treatmentNote": "극손상모"
   }
 ]
 ```
