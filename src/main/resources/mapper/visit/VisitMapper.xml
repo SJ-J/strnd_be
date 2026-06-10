@@ -87,6 +87,8 @@
         <result property="status"           column="STATUS"/>
         <result property="visitDt"          column="VISIT_DT"/>
         <result property="services"         column="SERVICES"/>
+        <result property="treatmentMenu"    column="TREATMENT_MENU"
+                typeHandler="com.strnd.api.common.typehandler.JsonStringListTypeHandler"/>
         <result property="treatmentProduct" column="TREATMENT_PRODUCT"/>
         <result property="treatmentDetail"  column="TREATMENT_DETAIL"/>
         <result property="treatmentNote"    column="TREATMENT_NOTE"/>
@@ -96,7 +98,7 @@
         <!-- 고객 방문 히스토리 목록 조회 (최신순, 서비스, 기간 필터 선택) -->
         SELECT
             VISIT_ID, STATUS, VISIT_DT, SERVICES,
-            TREATMENT_PRODUCT, TREATMENT_DETAIL, TREATMENT_NOTE
+            TREATMENT_MENU, TREATMENT_PRODUCT, TREATMENT_DETAIL, TREATMENT_NOTE
         FROM tb_visit_record
         WHERE CUSTOMER_ID = #{customerId}
         AND   DESIGNER_ID = #{designerId}
