@@ -203,15 +203,20 @@ Response `200`
     "phone": "01019931219",
     "gender": "FEMALE",
     "memo": "탈색했지만 앞머리 펌 하고 싶어요",
+    "isActive": true,
     "lastVisitDt": "2026-05-31T08:48:07",
     "regDt": "2026-05-31T08:48:07"
   }
 ]
 ```
 
+> 비활성 고객(`isActive: false`) 포함. 활성 우선(`IS_ACTIVE DESC`) → 최근 방문일 내림차순 정렬
+
 **GET /api/customers?keyword={검색어}**
 
 > 고객명(이름)으로 검색. `keyword` 미입력 시 전체 목록 반환
+>
+> 비활성 고객 포함, 활성 우선 정렬
 
 Response `200` — 전체 목록과 동일한 구조
 
@@ -225,6 +230,7 @@ Response `200`
   "phone": "01019931219",
   "gender": "FEMALE",
   "memo": "탈색했지만 앞머리 펌 하고 싶어요",
+  "isActive": true,
   "lastVisitDt": "2026-05-31T08:48:07",
   "regDt": "2026-05-31T08:48:07"
 }
@@ -481,6 +487,8 @@ Response `200`
 Request
 ```json
 {
+  "consentRequiredYn": true,
+  "consentOptionalYn": false,
   "gender": "FEMALE",
   "visitRoute": "SNS",
   "refDesigner": "임희진",
@@ -491,16 +499,22 @@ Request
   "requestMemo": "숱 많이 쳐주세요"
 }
 ```
+> `consentRequiredYn` — 개인정보 수집·이용 필수 동의 (필수)
+>
+> `consentOptionalYn` — 민감정보 수집·이용 선택 동의 (생략 가능)
+>
 > `gender` — `FEMALE` / `MALE` 중 하나 (필수, STEP0)
 >
 > `serviceId` — mg_services의 SERVICE_ID (설문 STEP1 선택값)
 >
-> `gender` 외 모든 필드 생략 가능 (`visitRoute`, `refDesigner`, 각 배열 필드)
+> `gender`, `consentRequiredYn` 외 모든 필드 생략 가능
 
 Response `200`
 ```json
 { "message": "설문이 제출되었습니다." }
 ```
+
+Response `400` — 필수 동의 미체크
 
 Response `404` — 유효하지 않은 토큰
 
