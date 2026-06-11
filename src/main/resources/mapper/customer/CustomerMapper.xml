@@ -6,41 +6,50 @@
 
     <select id="findAllByDesignerId" parameterType="Long"
             resultType="com.strnd.api.customer.domain.Customer">
-        <!-- 디자이너 소속 고객 전체 조회 (최근 방문일 내림차순) -->
+        <!-- 디자이너 소속 활성 고객 전체 조회 (최근 방문일 내림차순) -->
         SELECT
             CUSTOMER_ID, DESIGNER_ID, CUSTOMER_NAME, PHONE, GENDER, MEMO,
+            IS_ACTIVE,   -- 활성 여부
+            CONSENT_YN, CONSENT_DT, CONSENT_EXPIRE_DT,
             LAST_VISIT_DT, REG_DT, MOD_DT
         FROM tb_customers
         WHERE DESIGNER_ID = #{designerId}
+        AND IS_ACTIVE = 1
         ORDER BY LAST_VISIT_DT DESC, REG_DT DESC
     </select>
 
     <select id="searchByKeyword" resultType="com.strnd.api.customer.domain.Customer">
-        <!-- 이름 키워드로 고객 검색 (최근 방문일 내림차순) -->
+        <!-- 이름 키워드로 활성 고객 검색 (최근 방문일 내림차순) -->
         SELECT
             CUSTOMER_ID, DESIGNER_ID, CUSTOMER_NAME, PHONE, GENDER, MEMO,
+            IS_ACTIVE,   -- 활성 여부
+            CONSENT_YN, CONSENT_DT, CONSENT_EXPIRE_DT,
             LAST_VISIT_DT, REG_DT, MOD_DT
         FROM tb_customers
         WHERE DESIGNER_ID = #{designerId}
+        AND IS_ACTIVE = 1
         AND CUSTOMER_NAME LIKE CONCAT('%', #{keyword}, '%')
         ORDER BY LAST_VISIT_DT DESC, REG_DT DESC
     </select>
 
     <select id="findByCustomerIdAndDesignerId" resultType="com.strnd.api.customer.domain.Customer">
-        <!-- 고객 ID + 디자이너 ID로 단건 조회 -->
+        <!-- 고객 ID + 디자이너 ID로 단건 조회 (활성 고객만) -->
         SELECT
             CUSTOMER_ID, DESIGNER_ID, CUSTOMER_NAME, PHONE, GENDER, MEMO,
+            IS_ACTIVE,   -- 활성 여부
+            CONSENT_YN, CONSENT_DT, CONSENT_EXPIRE_DT,
             LAST_VISIT_DT, REG_DT, MOD_DT
         FROM tb_customers
         WHERE CUSTOMER_ID = #{customerId}
         AND DESIGNER_ID = #{designerId}
+        AND IS_ACTIVE = 1
     </select>
 
     <insert id="insert" parameterType="com.strnd.api.customer.domain.Customer"
             useGeneratedKeys="true" keyProperty="customerId">
-        <!-- 고객 신규 등록 -->
-        INSERT INTO tb_customers (DESIGNER_ID, CUSTOMER_NAME, PHONE, GENDER, MEMO, REG_DT, MOD_DT)
-        VALUES (#{designerId}, #{customerName}, #{phone}, #{gender}, #{memo}, NOW(), NOW())
+        <!-- 고객 신규 등록 (IS_ACTIVE=1, 동의 초기값 미동의) -->
+        INSERT INTO tb_customers (DESIGNER_ID, CUSTOMER_NAME, PHONE, GENDER, MEMO, IS_ACTIVE, CONSENT_YN, REG_DT, MOD_DT)
+        VALUES (#{designerId}, #{customerName}, #{phone}, #{gender}, #{memo}, 1, 0, NOW(), NOW())
     </insert>
 
     <update id="updateLastVisitDt">
@@ -70,6 +79,33 @@
             MOD_DT        = NOW()
         WHERE CUSTOMER_ID = #{customerId}
         AND DESIGNER_ID = #{designerId}
+    </update>
+
+    <update id="deactivate">
+        <!-- 고객 비활성화 -->
+        UPDATE tb_customers
+        SET IS_ACTIVE = 0,
+            MOD_DT    = NOW()
+        WHERE CUSTOMER_ID = #{customerId}
+        AND DESIGNER_ID = #{designerId}
+    </update>
+
+    <update id="updateConsent">
+        <!-- 개인정보 동의 처리 (동의일+3년 만료일 저장) -->
+        UPDATE tb_customers
+        SET CONSENT_YN         = 1,
+            CONSENT_DT         = #{consentDt},
+            CONSENT_EXPIRE_DT  = #{consentExpireDt},
+            MOD_DT             = NOW()
+        WHERE CUSTOMER_ID = #{customerId}
+    </update>
+
+    <update id="activate">
+        <!-- 비활성 고객 재활성화 (재방문+동의 완료 시) -->
+        UPDATE tb_customers
+        SET IS_ACTIVE = 1,
+            MOD_DT    = NOW()
+        WHERE CUSTOMER_ID = #{customerId}
     </update>
 
 </mapper>

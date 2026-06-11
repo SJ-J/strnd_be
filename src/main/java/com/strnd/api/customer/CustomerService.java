@@ -97,6 +97,15 @@ public class CustomerService {
         return CustomerResponse.from(updated);
     }
 
+    // 고객 비활성화
+    public void deactivateCustomer(Long designerId, Long customerId) {
+        // 소유권 확인
+        customerMapper.findByCustomerIdAndDesignerId(customerId, designerId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "고객을 찾을 수 없습니다."));
+        // IS_ACTIVE=0 처리
+        customerMapper.deactivate(customerId, designerId);
+    }
+
     // 빈 문자열을 null로 변환
     private String blankToNull(String value) {
         return (value == null || value.isBlank()) ? null : value;

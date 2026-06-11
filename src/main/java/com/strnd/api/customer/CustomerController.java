@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/customers")
@@ -108,5 +109,22 @@ public class CustomerController {
             @RequestBody @Valid CustomerRequest request) {
         Long designerId = Long.parseLong(designerIdStr);
         return ResponseEntity.ok(customerService.updateCustomer(designerId, customerId, request));
+    }
+
+    /**
+     * 고객 비활성화
+     * @param customerId 비활성화할 고객 ID
+     * @return 200 + 처리 메시지
+     * @since 2026-06-11
+     * @author SJ-J
+     */
+    @DeleteMapping("/{customerId}")
+    public ResponseEntity<Map<String, String>> deactivateCustomer(
+            @AuthenticationPrincipal String designerIdStr,
+            @PathVariable Long customerId) {
+        Long designerId = Long.parseLong(designerIdStr);
+        // IS_ACTIVE=0 처리 (실제 삭제 없음)
+        customerService.deactivateCustomer(designerId, customerId);
+        return ResponseEntity.ok(Map.of("message", "고객이 비활성화 처리 되었습니다."));
     }
 }

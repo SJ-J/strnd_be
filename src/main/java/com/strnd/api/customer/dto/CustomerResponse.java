@@ -1,5 +1,6 @@
 package com.strnd.api.customer.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.strnd.api.customer.domain.Customer;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +16,8 @@ public class CustomerResponse {
     private String phone;              // 연락처
     private String gender;             // 성별
     private String memo;               // 메모
+    @JsonProperty("isActive")
+    private boolean isActive;          // 활성 여부
     private LocalDateTime lastVisitDt; // 마지막 방문 일시
     private LocalDateTime regDt;       // 등록 일시
 
@@ -26,6 +29,7 @@ public class CustomerResponse {
                 .phone(customer.getPhone())
                 .gender(customer.getGender())
                 .memo(customer.getMemo())
+                .isActive(customer.isActive())
                 .lastVisitDt(customer.getLastVisitDt())
                 .regDt(customer.getRegDt())
                 .build();

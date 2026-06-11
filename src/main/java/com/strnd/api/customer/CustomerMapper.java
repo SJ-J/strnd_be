@@ -31,4 +31,15 @@ public interface CustomerMapper {
 
     // 성별 갱신 (설문 제출 시)
     void updateGender(@Param("customerId") Long customerId, @Param("gender") String gender);
+
+    // 고객 비활성화
+    void deactivate(@Param("customerId") Long customerId, @Param("designerId") Long designerId);
+
+    // 개인정보 동의 처리
+    void updateConsent(@Param("customerId") Long customerId,
+                    @Param("consentDt") LocalDateTime consentDt,
+                    @Param("consentExpireDt") LocalDateTime consentExpireDt);
+
+    // 비활성 고객 재활성화
+    void activate(@Param("customerId") Long customerId);
 }
