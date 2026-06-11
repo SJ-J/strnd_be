@@ -35,11 +35,16 @@ public interface CustomerMapper {
     // 고객 비활성화
     void deactivate(@Param("customerId") Long customerId, @Param("designerId") Long designerId);
 
-    // 개인정보 동의 처리
+    // 개인정보 동의 처리 (재동의 시 갱신)
     void updateConsent(@Param("customerId") Long customerId,
+                    @Param("consentRequiredYn") boolean consentRequiredYn,
+                    @Param("consentOptionalYn") boolean consentOptionalYn,
                     @Param("consentDt") LocalDateTime consentDt,
                     @Param("consentExpireDt") LocalDateTime consentExpireDt);
 
     // 비활성 고객 재활성화
     void activate(@Param("customerId") Long customerId);
+
+    // 동의 만료 고객 일괄 비활성화 (스케줄러용)
+    void expireByConsent();
 }

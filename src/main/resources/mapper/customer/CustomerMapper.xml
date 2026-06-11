@@ -6,43 +6,40 @@
 
     <select id="findAllByDesignerId" parameterType="Long"
             resultType="com.strnd.api.customer.domain.Customer">
-        <!-- 디자이너 소속 활성 고객 전체 조회 (최근 방문일 내림차순) -->
+        <!-- 디자이너 소속 전체 고객 조회 (활성/비활성 포함, 최근 방문일 내림차순) -->
         SELECT
             CUSTOMER_ID, DESIGNER_ID, CUSTOMER_NAME, PHONE, GENDER, MEMO,
-            IS_ACTIVE,   -- 활성 여부
-            CONSENT_YN, CONSENT_DT, CONSENT_EXPIRE_DT,
+            IS_ACTIVE,
+            CONSENT_REQUIRED_YN, CONSENT_OPTIONAL_YN, CONSENT_DT, CONSENT_EXPIRE_DT,
             LAST_VISIT_DT, REG_DT, MOD_DT
         FROM tb_customers
         WHERE DESIGNER_ID = #{designerId}
-        AND IS_ACTIVE = 1
-        ORDER BY LAST_VISIT_DT DESC, REG_DT DESC
+        ORDER BY IS_ACTIVE DESC, LAST_VISIT_DT DESC, REG_DT DESC
     </select>
 
     <select id="searchByKeyword" resultType="com.strnd.api.customer.domain.Customer">
-        <!-- 이름 키워드로 활성 고객 검색 (최근 방문일 내림차순) -->
+        <!-- 이름 키워드로 전체 고객 검색 (활성/비활성 포함, 최근 방문일 내림차순) -->
         SELECT
             CUSTOMER_ID, DESIGNER_ID, CUSTOMER_NAME, PHONE, GENDER, MEMO,
-            IS_ACTIVE,   -- 활성 여부
-            CONSENT_YN, CONSENT_DT, CONSENT_EXPIRE_DT,
+            IS_ACTIVE,
+            CONSENT_REQUIRED_YN, CONSENT_OPTIONAL_YN, CONSENT_DT, CONSENT_EXPIRE_DT,
             LAST_VISIT_DT, REG_DT, MOD_DT
         FROM tb_customers
         WHERE DESIGNER_ID = #{designerId}
-        AND IS_ACTIVE = 1
         AND CUSTOMER_NAME LIKE CONCAT('%', #{keyword}, '%')
-        ORDER BY LAST_VISIT_DT DESC, REG_DT DESC
+        ORDER BY IS_ACTIVE DESC, LAST_VISIT_DT DESC, REG_DT DESC
     </select>
 
     <select id="findByCustomerIdAndDesignerId" resultType="com.strnd.api.customer.domain.Customer">
-        <!-- 고객 ID + 디자이너 ID로 단건 조회 (활성 고객만) -->
+        <!-- 고객 ID + 디자이너 ID로 단건 조회 -->
         SELECT
             CUSTOMER_ID, DESIGNER_ID, CUSTOMER_NAME, PHONE, GENDER, MEMO,
-            IS_ACTIVE,   -- 활성 여부
-            CONSENT_YN, CONSENT_DT, CONSENT_EXPIRE_DT,
+            IS_ACTIVE,
+            CONSENT_REQUIRED_YN, CONSENT_OPTIONAL_YN, CONSENT_DT, CONSENT_EXPIRE_DT,
             LAST_VISIT_DT, REG_DT, MOD_DT
         FROM tb_customers
         WHERE CUSTOMER_ID = #{customerId}
         AND DESIGNER_ID = #{designerId}
-        AND IS_ACTIVE = 1
     </select>
 
     <insert id="insert" parameterType="com.strnd.api.customer.domain.Customer"
@@ -91,13 +88,24 @@
     </update>
 
     <update id="updateConsent">
-        <!-- 개인정보 동의 처리 (동의일+3년 만료일 저장) -->
+        <!-- 개인정보 동의 처리 (동의일+3년 만료일 저장, 재동의 시 갱신) -->
         UPDATE tb_customers
-        SET CONSENT_YN         = 1,
-            CONSENT_DT         = #{consentDt},
-            CONSENT_EXPIRE_DT  = #{consentExpireDt},
-            MOD_DT             = NOW()
+        SET CONSENT_REQUIRED_YN = #{consentRequiredYn},
+            CONSENT_OPTIONAL_YN = #{consentOptionalYn},
+            CONSENT_DT          = #{consentDt},
+            CONSENT_EXPIRE_DT   = #{consentExpireDt},
+            MOD_DT              = NOW()
         WHERE CUSTOMER_ID = #{customerId}
+    </update>
+
+    <update id="expireByConsent">
+        <!-- 동의 만료 고객 일괄 비활성화 -->
+        UPDATE tb_customers
+        SET IS_ACTIVE = 0,
+            MOD_DT    = NOW()
+        WHERE IS_ACTIVE = 1
+        AND CONSENT_EXPIRE_DT IS NOT NULL
+        AND CONSENT_EXPIRE_DT &lt; NOW()
     </update>
 
     <update id="activate">

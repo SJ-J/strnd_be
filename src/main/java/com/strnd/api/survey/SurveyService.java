@@ -49,6 +49,11 @@ public class SurveyService {
             serviceCode = service.getServiceCode();
         }
 
+        // 개인정보 필수 동의 검증
+        if (!Boolean.TRUE.equals(request.getConsentRequiredYn())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "개인정보 수집·이용 필수 동의가 필요합니다.");
+        }
+
         // 제출 데이터 세팅
         visit.setVisitRoute(blankToNull(request.getVisitRoute()));
         visit.setRefDesigner(blankToNull(request.getRefDesigner()));
@@ -60,6 +65,17 @@ public class SurveyService {
 
         // 설문 제출 저장 (STATUS='SUBMITTED')
         surveyMapper.submitSurvey(visit);
+
+        // 개인정보 동의 저장 및 재활성화
+        LocalDateTime consentDt = LocalDateTime.now();
+        customerMapper.updateConsent(
+                visit.getCustomerId(),
+                Boolean.TRUE.equals(request.getConsentRequiredYn()),
+                Boolean.TRUE.equals(request.getConsentOptionalYn()),
+                consentDt,
+                consentDt.plusYears(3)
+        );
+        customerMapper.activate(visit.getCustomerId());
 
         // 고객 성별 갱신
         customerMapper.updateGender(visit.getCustomerId(), request.getGender());

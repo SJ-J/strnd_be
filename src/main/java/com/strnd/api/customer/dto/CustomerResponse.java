@@ -1,6 +1,5 @@
 package com.strnd.api.customer.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.strnd.api.customer.domain.Customer;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,15 +10,14 @@ import java.time.LocalDateTime;
 @Builder
 public class CustomerResponse {
 
-    private Long customerId;           // 고객 ID
-    private String customerName;       // 고객명
-    private String phone;              // 연락처
-    private String gender;             // 성별
-    private String memo;               // 메모
-    @JsonProperty("isActive")
-    private boolean isActive;          // 활성 여부
-    private LocalDateTime lastVisitDt; // 마지막 방문 일시
-    private LocalDateTime regDt;       // 등록 일시
+    private Long customerId;            // 고객 ID
+    private String customerName;        // 고객명
+    private String phone;               // 연락처
+    private String gender;              // 성별
+    private String memo;                // 메모
+    private Boolean isActive;           // 활성 여부
+    private LocalDateTime lastVisitDt;  // 마지막 방문 일시
+    private LocalDateTime regDt;        // 등록 일시
 
     // Customer 도메인 -> 응답 DTO 변환
     public static CustomerResponse from(Customer customer) {
