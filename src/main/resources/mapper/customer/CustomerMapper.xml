@@ -45,8 +45,8 @@
     <insert id="insert" parameterType="com.strnd.api.customer.domain.Customer"
             useGeneratedKeys="true" keyProperty="customerId">
         <!-- 고객 신규 등록 (IS_ACTIVE=1, 동의 초기값 미동의) -->
-        INSERT INTO tb_customers (DESIGNER_ID, CUSTOMER_NAME, PHONE, GENDER, MEMO, IS_ACTIVE, CONSENT_YN, REG_DT, MOD_DT)
-        VALUES (#{designerId}, #{customerName}, #{phone}, #{gender}, #{memo}, 1, 0, NOW(), NOW())
+        INSERT INTO tb_customers (DESIGNER_ID, CUSTOMER_NAME, PHONE, GENDER, MEMO, IS_ACTIVE, CONSENT_REQUIRED_YN, CONSENT_OPTIONAL_YN, REG_DT, MOD_DT)
+        VALUES (#{designerId}, #{customerName}, #{phone}, #{gender}, #{memo}, 1, 0, 0, NOW(), NOW())
     </insert>
 
     <update id="updateLastVisitDt">

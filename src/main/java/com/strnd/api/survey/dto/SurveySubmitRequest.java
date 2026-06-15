@@ -13,7 +13,7 @@ import java.util.List;
 public class SurveySubmitRequest {
 
     // 개인정보 동의 (설문 진입 시 바텀시트에서 체크)
-    @NotNull(message = "개인정보 수집·이용 필수 동의는 필수입니다.")
+    @NotNull(message = "개인정보 수집·이용 필수 항목에 동의하지 않는 경우 서비스 이용이 불가합니다.")
     private Boolean consentRequiredYn;      // 개인정보 수집·이용 필수 동의
     private Boolean consentOptionalYn;      // 민감정보 수집·이용 선택 동의
 
