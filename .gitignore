@@ -42,3 +42,10 @@ out/
 ### Local config (sensitive) ###
 application-local.yaml
 src/main/resources/application-local.yaml
+
+### IntelliJ HTTP Client (sensitive) ###
+http/http-client.private.env.json
+
+### Qodana ###
+qodana.yaml
+.github/

@@ -1,6 +1,7 @@
 package com.strnd.api.visit;
 
 import com.strnd.api.common.dto.MessageResponse;
+import com.strnd.api.visit.dto.DirectVisitRequest;
 import com.strnd.api.visit.dto.TreatmentRequest;
 import com.strnd.api.visit.dto.VisitDetailResponse;
 import com.strnd.api.visit.dto.VisitStartRequest;
@@ -20,9 +21,9 @@ public class VisitController {
     private final VisitService visitService;
 
     /**
-     * 방문 기록 생성 (설문 시작 또는 설문 없이 바로 기록)
-     * @param request customerId, skipSurvey(false: 설문 시작 / true: 설문 없이 바로 기록)
-     * @return skipSurvey=false: visitId + surveyToken + surveyUrl / skipSurvey=true: visitId만 반환
+     * 설문 포함 방문 기록 생성 (PENDING + 설문 토큰 발급)
+     * @param request customerId
+     * @return visitId, surveyToken, surveyUrl
      * @since 2026-06-03
      * @author SJ-J
      */
@@ -33,6 +34,22 @@ public class VisitController {
         Long designerId = Long.parseLong(designerIdStr);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(visitService.startVisit(designerId, request));
+    }
+
+    /**
+     * 설문 없이 방문 기록 + 시술 내용 즉시 저장
+     * @param request customerId, serviceCode, treatmentMenu, treatmentProduct, treatmentDetail, treatmentNote
+     * @return visitId
+     * @since 2026-06-16
+     * @author SJ-J
+     */
+    @PostMapping("/direct")
+    public ResponseEntity<VisitStartResponse> createDirectVisit(
+            @AuthenticationPrincipal String designerIdStr,
+            @RequestBody @Valid DirectVisitRequest request) {
+        Long designerId = Long.parseLong(designerIdStr);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(visitService.createDirectVisit(designerId, request));
     }
 
     /**

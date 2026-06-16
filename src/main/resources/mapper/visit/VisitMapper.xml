@@ -18,7 +18,7 @@
 
     <insert id="insertSkipSurvey" parameterType="com.strnd.api.visit.domain.VisitRecord"
             useGeneratedKeys="true" keyProperty="visitId">
-        <!-- 설문 없이 바로 COMPLETED 상태로 방문 기록 생성 -->
+        <!-- 설문 없음, COMPLETED 상태로 방문 기록 생성 -->
         INSERT INTO tb_visit_record (
             CUSTOMER_ID, DESIGNER_ID, STATUS, VISIT_DT, REG_DT, MOD_DT
         ) VALUES (

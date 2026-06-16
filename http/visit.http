@@ -1,0 +1,61 @@
+### 로그인 (토큰 발급)
+POST {{BASE_URL}}/api/auth/login
+Content-Type: application/json
+
+{
+    "phone": "{{PHONE}}",
+    "pinCode": "{{PIN_CODE}}",
+    "rememberMe": false
+}
+
+> {%
+client.global.set("TOKEN"   , response.body.accessToken);
+%}
+
+###
+
+### 설문 포함 방문 생성 (설문 URL 발급)
+POST {{BASE_URL}}/api/visits
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "customerId": 1
+}
+
+###
+
+### 설문 없이 바로 기록 (방문 생성 + 시술 저장)
+POST {{BASE_URL}}/api/visits/direct
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+    "customerId": 1,
+    "serviceCode": "COLOR",
+    "treatmentMenu": ["코비네 특급 무손상 탈색제"],
+    "treatmentProduct": "유호표 7NB",
+    "treatmentDetail": "7NB 0.6 톤다운",
+    "treatmentNote": "극손상모"
+}
+
+###
+
+### 방문 기록 상세 조회
+GET {{BASE_URL}}/api/visits/1
+Authorization: Bearer {{TOKEN}}
+
+###
+
+### 시술 내용 기록 (설문 완료 후)
+PUT {{BASE_URL}}/api/visits/1/treatment
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+    "serviceCode": "COLOR",
+    "treatmentMenu": ["코비네 특급 무손상 탈색제"],
+    "treatmentProduct": "유호표 7NB",
+    "treatmentDetail": "7NB 0.6 톤다운",
+    "treatmentNote": "극손상모"
+}

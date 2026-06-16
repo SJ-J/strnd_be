@@ -105,11 +105,10 @@ Authorization: Bearer {accessToken}
 
 | Method | URL | 인증 | 설명 |
 |---|---|---|---|
-| POST | `/api/visits` | 필요 | 방문 기록 생성 (설문 시작 또는 설문 없이 바로 기록) |
+| POST | `/api/visits` | 필요 | 설문 포함 방문 기록 생성 (PENDING + 설문 토큰 발급) |
+| POST | `/api/visits/direct` | 필요 | 설문 없이 방문 기록 생성 + 시술 내용 저장 |
 | GET | `/api/visits/{visitId}` | 필요 | 방문 기록 단건 조회 |
 | PUT | `/api/visits/{visitId}/treatment` | 필요 | 시술 내용 기록 |
-
-> `skipSurvey: true` 요청 시 설문 없이 STATUS='COMPLETED'로 생성
 
 <br>
 

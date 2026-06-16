@@ -2,6 +2,7 @@ package com.strnd.api.visit;
 
 import com.strnd.api.customer.CustomerMapper;
 import com.strnd.api.visit.domain.VisitRecord;
+import com.strnd.api.visit.dto.DirectVisitRequest;
 import com.strnd.api.visit.dto.TreatmentRequest;
 import com.strnd.api.visit.dto.VisitDetailResponse;
 import com.strnd.api.visit.dto.VisitHistoryResponse;
@@ -30,27 +31,19 @@ public class VisitService {
     @Value("${app.frontend-base-url}")
     private String frontendBaseUrl;
 
-    // 설문 시작 또는 설문 없이 바로 기록 (skipSurvey 여부에 따라 분기)
+    // 설문 포함 방문 생성 (PENDING + 토큰 발급)
     @Transactional
     public VisitStartResponse startVisit(Long designerId, VisitStartRequest request) {
         // 고객 소유권 검증
         customerMapper.findByCustomerIdAndDesignerId(request.getCustomerId(), designerId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "고객을 찾을 수 없습니다."));
 
-        if (request.isSkipSurvey()) {
-            return createVisitWithoutSurvey(designerId, request.getCustomerId());
-        }
-        return createVisitWithSurvey(designerId, request.getCustomerId());
-    }
-
-    // 설문 포함 방문 생성 (PENDING + 토큰 발급)
-    private VisitStartResponse createVisitWithSurvey(Long designerId, Long customerId) {
         // 토큰 생성 및 당일 자정 만료 설정
         String token = UUID.randomUUID().toString().replace("-", "");
         LocalDateTime tokenExpiresDt = LocalDate.now().plusDays(1).atStartOfDay();
 
         VisitRecord visit = VisitRecord.builder()
-                .customerId(customerId)
+                .customerId(request.getCustomerId())
                 .designerId(designerId)
                 .surveyToken(token)
                 .tokenExpiresDt(tokenExpiresDt)
@@ -59,28 +52,12 @@ public class VisitService {
                 .build();
 
         visitMapper.insert(visit);
-        customerMapper.updateLastVisitDt(customerId, designerId, LocalDateTime.now());
+        customerMapper.updateLastVisitDt(request.getCustomerId(), designerId, LocalDateTime.now());
 
         return VisitStartResponse.builder()
                 .visitId(visit.getVisitId())
                 .surveyToken(token)
                 .surveyUrl(frontendBaseUrl + "/survey/" + token)
-                .build();
-    }
-
-    // 설문 없이 바로 기록 (COMPLETED, 토큰 없음)
-    private VisitStartResponse createVisitWithoutSurvey(Long designerId, Long customerId) {
-        VisitRecord visit = VisitRecord.builder()
-                .customerId(customerId)
-                .designerId(designerId)
-                .visitDt(LocalDateTime.now())
-                .build();
-
-        visitMapper.insertSkipSurvey(visit);
-        customerMapper.updateLastVisitDt(customerId, designerId, LocalDateTime.now());
-
-        return VisitStartResponse.builder()
-                .visitId(visit.getVisitId())
                 .build();
     }
 
@@ -119,6 +96,36 @@ public class VisitService {
                 blankToNull(request.getTreatmentProduct()),
                 blankToNull(request.getTreatmentDetail()),
                 blankToNull(request.getTreatmentNote()));
+    }
+
+    // 설문 없이 방문 기록 생성 + 시술 내용 저장 (저장 시점에만 호출)
+    @Transactional
+    public VisitStartResponse createDirectVisit(Long designerId, DirectVisitRequest request) {
+        // 고객 소유권 검증
+        customerMapper.findByCustomerIdAndDesignerId(request.getCustomerId(), designerId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "고객을 찾을 수 없습니다."));
+
+        VisitRecord visit = VisitRecord.builder()
+                .customerId(request.getCustomerId())
+                .designerId(designerId)
+                .visitDt(LocalDateTime.now())
+                .build();
+
+        // 방문 기록 생성 (COMPLETED)
+        visitMapper.insertSkipSurvey(visit);
+        customerMapper.updateLastVisitDt(request.getCustomerId(), designerId, LocalDateTime.now());
+
+        // 시술 내용 저장
+        visitMapper.updateTreatment(visit.getVisitId(), designerId,
+                request.getServiceCode(),
+                request.getTreatmentMenu(),
+                blankToNull(request.getTreatmentProduct()),
+                blankToNull(request.getTreatmentDetail()),
+                blankToNull(request.getTreatmentNote()));
+
+        return VisitStartResponse.builder()
+                .visitId(visit.getVisitId())
+                .build();
     }
 
     // 빈 문자열을 null로 변환
