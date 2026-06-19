@@ -52,7 +52,6 @@ public class VisitService {
                 .build();
 
         visitMapper.insert(visit);
-        customerMapper.updateLastVisitDt(request.getCustomerId(), designerId, LocalDateTime.now());
 
         return VisitStartResponse.builder()
                 .visitId(visit.getVisitId())

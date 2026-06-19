@@ -77,6 +77,9 @@ public class SurveyService {
         );
         customerMapper.activate(visit.getCustomerId());
 
+        // 마지막 방문일 갱신
+        customerMapper.updateLastVisitDt(visit.getCustomerId(), visit.getDesignerId(), LocalDateTime.now());
+
         // 고객 성별 갱신
         customerMapper.updateGender(visit.getCustomerId(), request.getGender());
     }
