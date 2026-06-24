@@ -1,6 +1,7 @@
 package com.strnd.api.survey;
 
 import com.strnd.api.common.dto.MessageResponse;
+import com.strnd.api.survey.dto.SurveyInfoResponse;
 import com.strnd.api.survey.dto.SurveySubmitRequest;
 import lombok.RequiredArgsConstructor;
 import jakarta.validation.Valid;
@@ -13,6 +14,18 @@ import org.springframework.web.bind.annotation.*;
 public class SurveyController {
 
     private final SurveyService surveyService;
+
+    /**
+     * 설문 페이지 정보 조회 (비인증)
+     * @param token 설문 토큰
+     * @return 고객명, 마지막 시술 메뉴
+     * @since 2026-06-24
+     * @author SJ-J
+     */
+    @GetMapping("/{token}")
+    public ResponseEntity<SurveyInfoResponse> getSurveyInfo(@PathVariable String token) {
+        return ResponseEntity.ok(surveyService.getSurveyInfo(token));
+    }
 
     /**
      * 설문 제출 (비인증)

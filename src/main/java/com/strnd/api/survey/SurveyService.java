@@ -2,6 +2,7 @@ package com.strnd.api.survey;
 
 import com.strnd.api.customer.CustomerMapper;
 import com.strnd.api.service.ServiceMapper;
+import com.strnd.api.survey.dto.SurveyInfoResponse;
 import com.strnd.api.survey.dto.SurveySubmitRequest;
 import com.strnd.api.visit.domain.VisitRecord;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,15 @@ public class SurveyService {
     private final SurveyMapper surveyMapper;
     private final ServiceMapper serviceMapper;
     private final CustomerMapper customerMapper;
+
+    // 설문 페이지 표시용 정보 조회 (토큰 존재 여부만 검증)
+    public SurveyInfoResponse getSurveyInfo(String token) {
+        SurveyInfoResponse info = surveyMapper.findInfoByToken(token);
+        if (info == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "유효하지 않은 설문 링크입니다.");
+        }
+        return info;
+    }
 
     // 설문 제출 (토큰 유효성 검증 후 설문 데이터 저장)
     @Transactional
