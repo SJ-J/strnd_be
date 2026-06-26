@@ -49,36 +49,55 @@ class HomeMapperTest {
         assertThat(result).isZero();
     }
 
-    // ─── findRecentCustomers ──────────────────────────────────────────────────
+    // ─── findCustomers ────────────────────────────────────────────────────────
 
     @Test
-    @DisplayName("findRecentCustomers — 최근 방문 고객 존재 → Customer 목록 반환")
-    void findRecentCustomers_returnsList() {
+    @DisplayName("findCustomers — limit null → 전체 목록 반환")
+    void findCustomers_returnsList() {
         // given
         Customer customer = Customer.builder()
                 .customerId(1L)
                 .customerName("홍길동")
                 .phone("010-1234-5678")
                 .build();
-        given(homeMapper.findRecentCustomers(1L)).willReturn(List.of(customer));
+        given(homeMapper.findCustomers(1L, null)).willReturn(List.of(customer));
 
         // when
-        List<Customer> result = homeMapper.findRecentCustomers(1L);
+        List<Customer> result = homeMapper.findCustomers(1L, null);
 
         // then
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getCustomerName()).isEqualTo("홍길동");
-        then(homeMapper).should().findRecentCustomers(1L);
+        then(homeMapper).should().findCustomers(1L, null);
     }
 
     @Test
-    @DisplayName("findRecentCustomers — 방문 없음 → 빈 목록 반환")
-    void findRecentCustomers_empty() {
+    @DisplayName("findCustomers — limit=5 → 최대 5건 반환")
+    void findCustomers_withLimit() {
         // given
-        given(homeMapper.findRecentCustomers(1L)).willReturn(List.of());
+        Customer customer = Customer.builder()
+                .customerId(1L)
+                .customerName("홍길동")
+                .phone("010-1234-5678")
+                .build();
+        given(homeMapper.findCustomers(1L, 5)).willReturn(List.of(customer));
 
         // when
-        List<Customer> result = homeMapper.findRecentCustomers(1L);
+        List<Customer> result = homeMapper.findCustomers(1L, 5);
+
+        // then
+        assertThat(result).hasSize(1);
+        then(homeMapper).should().findCustomers(1L, 5);
+    }
+
+    @Test
+    @DisplayName("findCustomers — 고객 없음 → 빈 목록 반환")
+    void findCustomers_empty() {
+        // given
+        given(homeMapper.findCustomers(1L, null)).willReturn(List.of());
+
+        // when
+        List<Customer> result = homeMapper.findCustomers(1L, null);
 
         // then
         assertThat(result).isEmpty();
