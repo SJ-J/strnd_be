@@ -144,7 +144,7 @@ Authorization: Bearer {accessToken}
 
 | Method | URL | 인증 | 설명 |
 |---|---|---|---|
-| GET | `/api/home` | 필요 | 홈 화면 조회 (이번 달 방문 수, 최근 방문 고객 5명) |
+| GET | `/api/home` | 필요 | 홈 화면 조회 (이번 달 방문 수, 고객 목록 전체 / `?limit=N` 으로 상위 N명 제한 가능) |
 
 <br>
 

@@ -11,7 +11,7 @@ import java.util.List;
 public class HomeResponse {
 
     private int monthlyVisitCount;                  // 이번 달 방문 수
-    private List<RecentCustomer> recentCustomers;   // 최근 방문 고객 5명
+    private List<RecentCustomer> customers;         // 고객 목록
 
     @Getter
     @Builder

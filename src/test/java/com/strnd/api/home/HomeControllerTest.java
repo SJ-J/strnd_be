@@ -56,7 +56,7 @@ class HomeControllerTest {
     // ─── GET /api/home ────────────────────────────────────────────────────────
 
     @Test
-    @DisplayName("GET /api/home → 200 + monthlyVisitCount, recentCustomers")
+    @DisplayName("GET /api/home → 200 + monthlyVisitCount, customers (전체)")
     void getHome_success() throws Exception {
         // given
         HomeResponse.RecentCustomer customer = HomeResponse.RecentCustomer.builder()
@@ -67,16 +67,38 @@ class HomeControllerTest {
                 .build();
         HomeResponse response = HomeResponse.builder()
                 .monthlyVisitCount(5)
-                .recentCustomers(List.of(customer))
+                .customers(List.of(customer))
                 .build();
-        given(homeService.getHome(1L)).willReturn(response);
+        given(homeService.getHome(1L, null)).willReturn(response);
 
         // when & then
         mockMvc.perform(get("/api/home"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.monthlyVisitCount").value(5))
-                .andExpect(jsonPath("$.recentCustomers[0].customerName").value("홍길동"))
-                .andExpect(jsonPath("$.recentCustomers[0].phone").value("010-1234-5678"));
+                .andExpect(jsonPath("$.customers[0].customerName").value("홍길동"))
+                .andExpect(jsonPath("$.customers[0].phone").value("010-1234-5678"));
+    }
+
+    @Test
+    @DisplayName("GET /api/home?limit=5 → 200 + customers 최대 5건")
+    void getHome_withLimit() throws Exception {
+        // given
+        HomeResponse.RecentCustomer customer = HomeResponse.RecentCustomer.builder()
+                .customerId(1L)
+                .customerName("홍길동")
+                .phone("010-1234-5678")
+                .lastVisitDt(LocalDateTime.of(2026, 6, 1, 10, 0))
+                .build();
+        HomeResponse response = HomeResponse.builder()
+                .monthlyVisitCount(5)
+                .customers(List.of(customer))
+                .build();
+        given(homeService.getHome(1L, 5)).willReturn(response);
+
+        // when & then
+        mockMvc.perform(get("/api/home").param("limit", "5"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.customers[0].customerName").value("홍길동"));
     }
 
     @Test
@@ -85,15 +107,15 @@ class HomeControllerTest {
         // given
         HomeResponse response = HomeResponse.builder()
                 .monthlyVisitCount(0)
-                .recentCustomers(List.of())
+                .customers(List.of())
                 .build();
-        given(homeService.getHome(1L)).willReturn(response);
+        given(homeService.getHome(1L, null)).willReturn(response);
 
         // when & then
         mockMvc.perform(get("/api/home"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.monthlyVisitCount").value(0))
-                .andExpect(jsonPath("$.recentCustomers").isArray())
-                .andExpect(jsonPath("$.recentCustomers").isEmpty());
+                .andExpect(jsonPath("$.customers").isArray())
+                .andExpect(jsonPath("$.customers").isEmpty());
     }
 }

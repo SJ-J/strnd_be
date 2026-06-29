@@ -29,7 +29,7 @@ class HomeServiceTest {
     // ─── getHome ──────────────────────────────────────────────────────────────
 
     @Test
-    @DisplayName("getHome — 정상 → monthlyVisitCount + recentCustomers 반환")
+    @DisplayName("getHome — limit null → 전체 고객 목록 반환")
     void getHome_success() {
         // given
         Customer customer = Customer.builder()
@@ -39,18 +39,18 @@ class HomeServiceTest {
                 .lastVisitDt(LocalDateTime.of(2026, 6, 1, 10, 0))
                 .build();
         given(homeMapper.countMonthlyVisits(1L)).willReturn(3);
-        given(homeMapper.findRecentCustomers(1L)).willReturn(List.of(customer));
+        given(homeMapper.findCustomers(1L, null)).willReturn(List.of(customer));
 
         // when
-        HomeResponse result = homeService.getHome(1L);
+        HomeResponse result = homeService.getHome(1L, null);
 
         // then
         assertThat(result.getMonthlyVisitCount()).isEqualTo(3);
-        assertThat(result.getRecentCustomers()).hasSize(1);
-        assertThat(result.getRecentCustomers().get(0).getCustomerName()).isEqualTo("홍길동");
-        assertThat(result.getRecentCustomers().get(0).getPhone()).isEqualTo("010-1234-5678");
+        assertThat(result.getCustomers()).hasSize(1);
+        assertThat(result.getCustomers().get(0).getCustomerName()).isEqualTo("홍길동");
+        assertThat(result.getCustomers().get(0).getPhone()).isEqualTo("010-1234-5678");
         then(homeMapper).should().countMonthlyVisits(1L);
-        then(homeMapper).should().findRecentCustomers(1L);
+        then(homeMapper).should().findCustomers(1L, null);
     }
 
     @Test
@@ -58,19 +58,19 @@ class HomeServiceTest {
     void getHome_empty() {
         // given
         given(homeMapper.countMonthlyVisits(1L)).willReturn(0);
-        given(homeMapper.findRecentCustomers(1L)).willReturn(List.of());
+        given(homeMapper.findCustomers(1L, null)).willReturn(List.of());
 
         // when
-        HomeResponse result = homeService.getHome(1L);
+        HomeResponse result = homeService.getHome(1L, null);
 
         // then
         assertThat(result.getMonthlyVisitCount()).isZero();
-        assertThat(result.getRecentCustomers()).isEmpty();
+        assertThat(result.getCustomers()).isEmpty();
     }
 
     @Test
-    @DisplayName("getHome — 최근 고객 5명 모두 존재 → RecentCustomer 5건 반환")
-    void getHome_fiveRecentCustomers() {
+    @DisplayName("getHome — limit=5 → 최근 고객 5건 반환")
+    void getHome_withLimit() {
         // given
         List<Customer> customers = List.of(
                 Customer.builder().customerId(1L).customerName("고객1").phone("010-0001-0001").build(),
@@ -80,13 +80,14 @@ class HomeServiceTest {
                 Customer.builder().customerId(5L).customerName("고객5").phone("010-0005-0005").build()
         );
         given(homeMapper.countMonthlyVisits(1L)).willReturn(10);
-        given(homeMapper.findRecentCustomers(1L)).willReturn(customers);
+        given(homeMapper.findCustomers(1L, 5)).willReturn(customers);
 
         // when
-        HomeResponse result = homeService.getHome(1L);
+        HomeResponse result = homeService.getHome(1L, 5);
 
         // then
-        assertThat(result.getRecentCustomers()).hasSize(5);
-        assertThat(result.getRecentCustomers().get(4).getCustomerName()).isEqualTo("고객5");
+        assertThat(result.getCustomers()).hasSize(5);
+        assertThat(result.getCustomers().get(4).getCustomerName()).isEqualTo("고객5");
+        then(homeMapper).should().findCustomers(1L, 5);
     }
 }

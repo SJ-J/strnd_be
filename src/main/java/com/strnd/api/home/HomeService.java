@@ -14,13 +14,13 @@ public class HomeService {
 
     private final HomeMapper homeMapper;
 
-    // 홈 화면 데이터 조회 (이번 달 방문 수 + 최근 방문 고객 5명)
-    public HomeResponse getHome(Long designerId) {
+    // 홈 화면 데이터 조회 (이번 달 방문 수 + 고객 목록, limit null이면 전체)
+    public HomeResponse getHome(Long designerId, Integer limit) {
         // 이번 달 방문 수
         int monthlyVisitCount = homeMapper.countMonthlyVisits(designerId);
 
-        // 최근 방문 고객 5명 -> RecentCustomer 변환
-        List<RecentCustomer> recentCustomers = homeMapper.findRecentCustomers(designerId).stream()
+        // 고객 목록 조회 -> RecentCustomer 변환
+        List<RecentCustomer> customers = homeMapper.findCustomers(designerId, limit).stream()
                 .map(c -> RecentCustomer.builder()
                         .customerId(c.getCustomerId())
                         .customerName(c.getCustomerName())
@@ -31,7 +31,7 @@ public class HomeService {
 
         return HomeResponse.builder()
                 .monthlyVisitCount(monthlyVisitCount)
-                .recentCustomers(recentCustomers)
+                .customers(customers)
                 .build();
     }
 }

@@ -13,16 +13,16 @@
         AND MONTH(VISIT_DT) = MONTH(NOW())
     </select>
 
-    <select id="findRecentCustomers" parameterType="Long"
-            resultType="com.strnd.api.customer.domain.Customer">
-        <!-- 최근 방문 고객 5명 (LAST_VISIT_DT 내림차순) -->
+    <select id="findCustomers" resultType="com.strnd.api.customer.domain.Customer">
+        <!-- 고객 목록 조회 (LAST_VISIT_DT 내림차순, NULL 후순위 / limit 지정 시 상위 N건) -->
         SELECT
             CUSTOMER_ID, CUSTOMER_NAME, PHONE, LAST_VISIT_DT
         FROM tb_customers
         WHERE DESIGNER_ID = #{designerId}
-        AND LAST_VISIT_DT IS NOT NULL
-        ORDER BY LAST_VISIT_DT DESC
-        LIMIT 5
+        ORDER BY LAST_VISIT_DT IS NULL ASC, LAST_VISIT_DT DESC
+        <if test="limit != null">
+            LIMIT #{limit}
+        </if>
     </select>
 
 </mapper>

@@ -2,6 +2,7 @@ package com.strnd.api.home;
 
 import com.strnd.api.customer.domain.Customer;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -11,6 +12,6 @@ public interface HomeMapper {
     // 이번 달 방문 수 조회
     int countMonthlyVisits(Long designerId);
 
-    // 최근 방문 고객 5명 조회
-    List<Customer> findRecentCustomers(Long designerId);
+    // 고객 목록 조회 (limit null이면 전체, 지정 시 해당 수만큼)
+    List<Customer> findCustomers(@Param("designerId") Long designerId, @Param("limit") Integer limit);
 }
