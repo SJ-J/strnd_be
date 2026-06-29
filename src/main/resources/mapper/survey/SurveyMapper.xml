@@ -8,20 +8,22 @@
         <result property="customerName"      column="CUSTOMER_NAME"/>
         <result property="lastTreatmentMenu" column="LAST_TREATMENT_MENU"
                 typeHandler="com.strnd.api.common.typehandler.JsonStringListTypeHandler"/>
+        <result property="status"            column="STATUS"/>
     </resultMap>
 
     <select id="findInfoByToken" parameterType="String" resultMap="surveyInfoResultMap">
-        <!-- 설문 페이지용 고객명·최근 시술 조회 (비인증 공개) -->
+        <!-- 설문 페이지용 고객명·최근 시술·상태 조회 (비인증 공개) -->
         SELECT
             c.CUSTOMER_NAME,
+            v.STATUS,
             (
                 SELECT TREATMENT_MENU
                 FROM tb_visit_record
                 WHERE CUSTOMER_ID = v.CUSTOMER_ID
-                  AND DESIGNER_ID  = v.DESIGNER_ID
-                  AND STATUS       = 'COMPLETED'
-                  AND TREATMENT_MENU IS NOT NULL
-                  AND VISIT_ID    != v.VISIT_ID
+                AND DESIGNER_ID  = v.DESIGNER_ID
+                AND STATUS       = 'COMPLETED'
+                AND TREATMENT_MENU IS NOT NULL
+                AND VISIT_ID    != v.VISIT_ID
                 ORDER BY VISIT_DT DESC
                 LIMIT 1
             ) AS LAST_TREATMENT_MENU
