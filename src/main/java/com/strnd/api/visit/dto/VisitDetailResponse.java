@@ -30,7 +30,7 @@ public class VisitDetailResponse {
     private String refDesigner;
 
     // 설문 STEP1
-    private String services;
+    private List<String> services;
 
     // 설문 STEP2
     private List<String> moods;

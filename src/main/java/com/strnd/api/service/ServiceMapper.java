@@ -14,4 +14,7 @@ public interface ServiceMapper {
 
     // 서비스 ID로 단건 조회
     Service findById(@Param("serviceId") Long serviceId);
+
+    // 서비스 ID 목록으로 조회
+    List<Service> findByIds(@Param("serviceIds") List<Long> serviceIds);
 }

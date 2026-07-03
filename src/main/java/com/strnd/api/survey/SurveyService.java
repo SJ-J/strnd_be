@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -49,14 +50,13 @@ public class SurveyService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 제출된 설문입니다.");
         }
 
-        // serviceId -> serviceCode 변환
-        String serviceCode = null;
-        if (request.getServiceId() != null) {
-            com.strnd.api.service.domain.Service service = serviceMapper.findById(request.getServiceId());
-            if (service == null) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "유효하지 않은 서비스 ID입니다.");
-            }
-            serviceCode = service.getServiceCode();
+        // serviceIds -> serviceCodes 변환
+        List<String> serviceCodes = null;
+        if (request.getServiceIds() != null && !request.getServiceIds().isEmpty()) {
+            List<com.strnd.api.service.domain.Service> services = serviceMapper.findByIds(request.getServiceIds());
+            serviceCodes = services.stream()
+                    .map(com.strnd.api.service.domain.Service::getServiceCode)
+                    .collect(java.util.stream.Collectors.toList());
         }
 
         // 개인정보 필수 동의 검증
@@ -67,7 +67,7 @@ public class SurveyService {
         // 제출 데이터 세팅
         visit.setVisitRoute(blankToNull(request.getVisitRoute()));
         visit.setRefDesigner(blankToNull(request.getRefDesigner()));
-        visit.setServices(serviceCode);
+        visit.setServices(serviceCodes);
         visit.setMoods(request.getMoods());
         visit.setStyleImageIds(request.getStyleImageIds());
         visit.setHairConcerns(request.getHairConcerns());

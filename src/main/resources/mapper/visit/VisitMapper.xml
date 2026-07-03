@@ -50,7 +50,8 @@
         <!-- 설문 -->
         <result property="visitRoute"       column="VISIT_ROUTE"/>
         <result property="refDesigner"      column="REF_DESIGNER"/>
-        <result property="services"         column="SERVICES"/>
+        <result property="services"         column="SERVICES"
+                typeHandler="com.strnd.api.common.typehandler.JsonStringListTypeHandler"/>
         <result property="moods"            column="MOODS"
                 typeHandler="com.strnd.api.common.typehandler.JsonStringListTypeHandler"/>
         <result property="styleImageIds"    column="STYLE_IMAGE_IDS"
@@ -86,7 +87,8 @@
         <result property="visitId"          column="VISIT_ID"/>
         <result property="status"           column="STATUS"/>
         <result property="visitDt"          column="VISIT_DT"/>
-        <result property="services"         column="SERVICES"/>
+        <result property="services"         column="SERVICES"
+                typeHandler="com.strnd.api.common.typehandler.JsonStringListTypeHandler"/>
         <result property="treatmentMenu"    column="TREATMENT_MENU"
                 typeHandler="com.strnd.api.common.typehandler.JsonStringListTypeHandler"/>
         <result property="treatmentProduct" column="TREATMENT_PRODUCT"/>
@@ -109,10 +111,11 @@
             AND VISIT_DT &lt; DATE_ADD(#{endDate}, INTERVAL 1 DAY)
         </if>
         <if test="serviceCodes != null and serviceCodes.size() > 0">
-            AND SERVICES IN
-            <foreach collection="serviceCodes" item="code" open="(" separator="," close=")">
+            AND JSON_OVERLAPS(SERVICES, JSON_ARRAY(
+            <foreach collection="serviceCodes" item="code" separator=",">
                 #{code}
             </foreach>
+            ))
         </if>
         ORDER BY VISIT_DT DESC
     </select>
@@ -121,7 +124,7 @@
         <!-- 시술 내용 기록 및 상태 COMPLETED 변경 -->
         UPDATE tb_visit_record
         SET
-            SERVICES          = #{serviceCode},
+            SERVICES          = #{serviceCodes, typeHandler=com.strnd.api.common.typehandler.JsonStringListTypeHandler},
             TREATMENT_MENU    = #{treatmentMenu, typeHandler=com.strnd.api.common.typehandler.JsonStringListTypeHandler},
             TREATMENT_PRODUCT = #{treatmentProduct},
             TREATMENT_DETAIL  = #{treatmentDetail},

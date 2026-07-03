@@ -26,7 +26,7 @@ public class SurveySubmitRequest {
     private String refDesigner;        // 소개 디자이너 (nullable)
 
     // STEP1: 서비스 선택
-    private Long serviceId;            // 선택 서비스 ID (단일)
+    private List<Long> serviceIds;     // 선택 서비스 ID 목록 (다중)
 
     // STEP2: 선호 무드
     private List<String> moods;        // 선호 무드

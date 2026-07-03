@@ -9,7 +9,7 @@ import java.util.List;
 @NoArgsConstructor
 public class TreatmentRequest {
 
-    private String serviceCode;          // 서비스 카테고리 (SERVICE_CODE, 디자이너가 수정 가능)
+    private List<String> serviceCodes;   // 서비스 카테고리 목록 (SERVICE_CODE, 디자이너가 수정 가능)
     private List<String> treatmentMenu;  // 시술 메뉴
     private String treatmentProduct;     // 사용 약제
     private String treatmentDetail;      // 시술 내용

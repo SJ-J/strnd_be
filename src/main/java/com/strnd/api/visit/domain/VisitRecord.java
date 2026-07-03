@@ -24,7 +24,7 @@ public class VisitRecord {
     private String visitRoute;              // 방문 경로
 
     // 설문 STEP1
-    private String services;               // 선택 서비스 코드 (SERVICE_CODE)
+    private List<String> services;         // 선택 서비스 코드 목록 (SERVICE_CODE)
 
     // 설문 STEP2
     private List<String> moods;             // 선호 무드

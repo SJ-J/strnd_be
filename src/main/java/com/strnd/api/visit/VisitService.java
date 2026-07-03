@@ -90,7 +90,7 @@ public class VisitService {
         }
         // 시술 내용 저장 및 상태 변경
         visitMapper.updateTreatment(visitId, designerId,
-                request.getServiceCode(),
+                request.getServiceCodes(),
                 request.getTreatmentMenu(),
                 blankToNull(request.getTreatmentProduct()),
                 blankToNull(request.getTreatmentDetail()),
@@ -116,7 +116,7 @@ public class VisitService {
 
         // 시술 내용 저장
         visitMapper.updateTreatment(visit.getVisitId(), designerId,
-                request.getServiceCode(),
+                request.getServiceCodes(),
                 request.getTreatmentMenu(),
                 blankToNull(request.getTreatmentProduct()),
                 blankToNull(request.getTreatmentDetail()),

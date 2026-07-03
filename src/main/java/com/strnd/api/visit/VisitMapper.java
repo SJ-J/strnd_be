@@ -27,7 +27,7 @@ public interface VisitMapper {
 
     // 시술 내용 기록 및 STATUS='COMPLETED' 변경
     void updateTreatment(@Param("visitId") Long visitId, @Param("designerId") Long designerId,
-                        @Param("serviceCode") String serviceCode,
+                        @Param("serviceCodes") java.util.List<String> serviceCodes,
                         @Param("treatmentMenu") java.util.List<String> treatmentMenu,
                         @Param("treatmentProduct") String treatmentProduct,
                         @Param("treatmentDetail") String treatmentDetail,
