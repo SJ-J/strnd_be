@@ -8,9 +8,9 @@
 
 | 환경 | URL |
 |---|---|
-| Production (Backend) | https://strnd-be.onrender.com |
+| Production (Backend) | https://strnd-be-abw4.onrender.com |
 | Production (Frontend) | https://strnd.vercel.app |
-| Health Check | https://strnd-be.onrender.com/health |
+| Health Check | https://strnd-be-abw4.onrender.com/health |
 
 <br>
 
