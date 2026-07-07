@@ -54,6 +54,10 @@ public class SurveyService {
         List<String> serviceCodes = null;
         if (request.getServiceIds() != null && !request.getServiceIds().isEmpty()) {
             List<com.strnd.api.service.domain.Service> services = serviceMapper.findByIds(request.getServiceIds());
+            // 요청한 서비스 ID 중 존재하지 않는 항목이 있으면 400
+            if (services.size() != request.getServiceIds().size()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "유효하지 않은 서비스 ID입니다.");
+            }
             serviceCodes = services.stream()
                     .map(com.strnd.api.service.domain.Service::getServiceCode)
                     .collect(java.util.stream.Collectors.toList());

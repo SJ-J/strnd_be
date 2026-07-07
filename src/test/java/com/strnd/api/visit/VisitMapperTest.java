@@ -131,10 +131,10 @@ class VisitMapperTest {
     @DisplayName("updateTreatment → visitMapper.updateTreatment 호출 검증")
     void updateTreatment_called() {
         // when
-        visitMapper.updateTreatment(1L, 1L, "CUT", List.of("커트"), null, null, null);
+        visitMapper.updateTreatment(1L, 1L, List.of("CUT"), List.of("커트"), null, null, null);
 
         // then
-        then(visitMapper).should().updateTreatment(1L, 1L, "CUT", List.of("커트"), null, null, null);
+        then(visitMapper).should().updateTreatment(1L, 1L, List.of("CUT"), List.of("커트"), null, null, null);
     }
 
     // ─── findHistoryByFilter ──────────────────────────────────────────────────

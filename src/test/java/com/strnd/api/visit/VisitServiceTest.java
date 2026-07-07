@@ -163,7 +163,7 @@ class VisitServiceTest {
         visitService.recordTreatment(1L, 1L, treatmentRequest("CUT"));
 
         // then
-        then(visitMapper).should().updateTreatment(eq(1L), eq(1L), eq("CUT"), any(), any(), any(), any());
+        then(visitMapper).should().updateTreatment(eq(1L), eq(1L), eq(List.of("CUT")), any(), any(), any(), any());
     }
 
     @Test
@@ -197,7 +197,7 @@ class VisitServiceTest {
 
         // then
         assertThat(response.getVisitId()).isEqualTo(5L);
-        then(visitMapper).should().updateTreatment(eq(5L), eq(1L), eq("CUT"), any(), any(), any(), any());
+        then(visitMapper).should().updateTreatment(eq(5L), eq(1L), eq(List.of("CUT")), any(), any(), any(), any());
         then(customerMapper).should().updateLastVisitDt(eq(1L), eq(1L), any());
     }
 
@@ -231,7 +231,7 @@ class VisitServiceTest {
     // TreatmentRequest 리플렉션 주입
     private TreatmentRequest treatmentRequest(String serviceCode) throws Exception {
         TreatmentRequest r = new TreatmentRequest();
-        setField(r, "serviceCode", serviceCode);
+        setField(r, "serviceCodes", List.of(serviceCode));
         return r;
     }
 
@@ -239,7 +239,7 @@ class VisitServiceTest {
     private DirectVisitRequest directRequest(Long customerId, String serviceCode) throws Exception {
         DirectVisitRequest r = new DirectVisitRequest();
         setField(r, "customerId", customerId);
-        setField(r, "serviceCode", serviceCode);
+        setField(r, "serviceCodes", List.of(serviceCode));
         return r;
     }
 

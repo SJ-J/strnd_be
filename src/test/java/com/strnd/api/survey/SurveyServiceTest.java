@@ -15,9 +15,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.http.HttpStatus.*;
@@ -46,7 +48,7 @@ class SurveyServiceTest {
         given(surveyMapper.findByToken("token")).willReturn(visit);
 
         Service service = serviceOf(10L, "CUT");
-        given(serviceMapper.findById(10L)).willReturn(service);
+        given(serviceMapper.findByIds(List.of(10L))).willReturn(List.of(service));
 
         SurveySubmitRequest request = request(true, false, "FEMALE", 10L);
 
@@ -126,7 +128,7 @@ class SurveyServiceTest {
         // given
         VisitRecord visit = pendingVisit(1L, 1L, LocalDateTime.now().plusHours(2));
         given(surveyMapper.findByToken("token")).willReturn(visit);
-        given(serviceMapper.findById(anyLong())).willReturn(null);
+        given(serviceMapper.findByIds(anyList())).willReturn(List.of());
 
         // when & then
         assertThatThrownBy(() -> surveyService.submitSurvey("token", request(true, false, "FEMALE", 99L)))
@@ -172,7 +174,7 @@ class SurveyServiceTest {
         setField(r, "consentRequiredYn", consentRequired);
         setField(r, "consentOptionalYn", consentOptional);
         setField(r, "gender", gender);
-        setField(r, "serviceId", serviceId);
+        setField(r, "serviceIds", serviceId == null ? null : List.of(serviceId));
         return r;
     }
 
